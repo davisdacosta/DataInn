@@ -1,0 +1,12 @@
+<svg width="34" height="34" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DataInn logo placeholder">
+  <defs>
+    <linearGradient id="di-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00C2FF"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect width="34" height="34" rx="9" fill="#0B132B"/>
+  <rect width="34" height="34" rx="9" fill="url(#di-grad)" fill-opacity="0.16"/>
+  <path d="M9 23V11h5.2c3.9 0 6.3 2.2 6.3 6s-2.4 6-6.3 6H9Zm3-2.4h2c2.2 0 3.4-1.2 3.4-3.6s-1.2-3.6-3.4-3.6h-2v7.2Z" fill="url(#di-grad)"/>
+  <circle cx="24.5" cy="10.5" r="2.3" fill="#00C2FF"/>
+</svg>

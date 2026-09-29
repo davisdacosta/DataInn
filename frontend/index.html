@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('datainn-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<!-- Favicon Icon -->
+ <link rel="icon" type="image/png" sizes="32x32" href="assets/datainn-favicon.png" />
+
+<title>DataInn — Buy affordable data bundles in Ghana</title>
+<meta name="description" content="Buy affordable MTN, Telecel and AirtelTigo data bundles delivered directly to any Ghanaian number. No account needed." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="css/styles.css" rel="stylesheet" />
+<link href="css/components.css" rel="stylesheet" />
+</head>
+<body class="has-bottom-nav">
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/New-dataInn-logo.png" alt="DataInn" class="brand-logo" />
+      <span class="brand-name">DataInn</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#networks">Networks</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      </button>
+      <a href="buy.html" class="btn btn-primary">Buy Data</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <h1>Buy affordable data bundles delivered directly to any Ghanaian number.</h1>
+        <p class="lede">MTN, Telecel and AirtelTigo bundles, paid for with Paystack, sent straight to the recipient — no account, no app, no waiting on a middleman.</p>
+        <div class="hero-actions">
+          <a href="buy.html" class="btn btn-primary btn-lg">Buy Data</a>
+          <a href="#how-it-works" class="btn btn-on-dark btn-lg">How it works</a>
+        </div>
+        <div class="hero-trust">
+          <span class="hero-trust-item">No account required</span>
+          <span class="hero-trust-item">Secure payment via Paystack</span>
+          <span class="hero-trust-item">Automatic refund if delivery fails</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-visual-row">
+          <span class="hero-visual-label">Network</span>
+          <span class="hero-visual-value">MTN</span>
+        </div>
+        <div class="hero-visual-row">
+          <span class="hero-visual-label">Bundle</span>
+          <span class="hero-visual-value">5GB · Non-expiry</span>
+        </div>
+        <div class="hero-visual-row">
+          <span class="hero-visual-label">Recipient</span>
+          <span class="hero-visual-value">024 123 4567</span>
+        </div>
+        <div class="hero-visual-row">
+          <span class="hero-visual-label">Status</span>
+          <span class="hero-visual-status"><span class="dot"></span>Delivered</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="networks">
+    <div class="container">
+      <div class="section-head">
+        <h2>Every major network, one checkout</h2>
+        <p>Pick the network the recipient uses — pricing and bundle sizes are shown before you pay.</p>
+      </div>
+      <div class="network-grid">
+        <div class="network-tile">
+          <span class="network-dot mtn">MTN</span>
+          <h3>MTN</h3>
+          <p>Non-expiry bundles from 1GB to 10GB.</p>
+        </div>
+        <div class="network-tile">
+          <span class="network-dot telecel">TC</span>
+          <h3>Telecel</h3>
+          <p>30-day bundles from 1GB to 10GB.</p>
+        </div>
+        <div class="network-tile">
+          <span class="network-dot airteltigo">AT</span>
+          <h3>AirtelTigo</h3>
+          <p>30-day bundles from 1GB to 10GB.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-head">
+        <h2>How it works</h2>
+        <p>Four steps from checkout to a recipient with more data.</p>
+      </div>
+      <div class="steps-list">
+        <div class="step-item">
+          <span class="step-number">01</span>
+          <h3>Choose a bundle</h3>
+          <p>Pick the network, size and validity that fits.</p>
+        </div>
+        <div class="step-item">
+          <span class="step-number">02</span>
+          <h3>Enter the number</h3>
+          <p>Add the recipient's phone number and your email.</p>
+        </div>
+        <div class="step-item">
+          <span class="step-number">03</span>
+          <h3>Pay securely</h3>
+          <p>Complete payment through Paystack — cards or mobile money.</p>
+        </div>
+        <div class="step-item">
+          <span class="step-number">04</span>
+          <h3>Data is sent</h3>
+          <p>We dispatch the bundle and show you the delivery status.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Built to be trusted with a payment</h2>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <h3>No account needed</h3>
+          <p>Buy as a guest. There's nothing to sign up for and nothing to remember.</p>
+        </div>
+        <div class="benefit-card">
+          <h3>Clear pricing upfront</h3>
+          <p>The price you see at checkout is the price you pay — no surprises added later.</p>
+        </div>
+        <div class="benefit-card">
+          <h3>Refunded if delivery fails</h3>
+          <p>If a bundle can't be delivered, the order is refunded automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-head">
+        <h2>Frequently asked questions</h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-question">How long does delivery take?<span class="faq-icon"></span></summary>
+          <div class="faq-answer">Delivery isn't instant — bundles are sent to the network shortly after payment, and you'll see the order move to "delivered" on screen once it lands. Most orders complete within a few minutes.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Do I need an account to buy data?<span class="faq-icon"></span></summary>
+          <div class="faq-answer">No. Enter the recipient's number and your email at checkout — that's all that's required.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">What happens if my payment succeeds but delivery fails?<span class="faq-icon"></span></summary>
+          <div class="faq-answer">If we can't deliver the bundle, your order is refunded automatically and you'll see the updated status on your order page.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Which payment methods can I use?<span class="faq-icon"></span></summary>
+          <div class="faq-answer">Payment is handled by Paystack, which supports Ghanaian debit/credit cards and mobile money.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Can I buy data for someone else's number?<span class="faq-icon"></span></summary>
+          <div class="faq-answer">Yes — the recipient number doesn't need to match your own. Just make sure it's entered correctly, since bundles can't be redirected once sent.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>Ready to send data?</h2>
+        <p>Pick a bundle and check out in under a minute.</p>
+        <a href="buy.html" class="btn btn-primary btn-lg" style="margin-top: 20px;">Buy Data</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <span>&copy; 2026 DataInn. All bundle orders are processed securely via Paystack.</span>
+    <span>Prices shown in GHS.</span>
+  </div>
+</footer>
+
+<a class="whatsapp-fab" href="https://wa.me/233202209611" target="_blank" rel="noopener" aria-label="Chat with DataInn on WhatsApp">
+  <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.04 3C9.4 3 4 8.36 4 15c0 2.29.64 4.44 1.76 6.27L4 29l7.94-1.7A11.9 11.9 0 0 0 16.04 27C22.68 27 28 21.64 28 15S22.68 3 16.04 3Zm0 21.7c-1.96 0-3.83-.53-5.44-1.5l-.39-.23-4.7 1 1.03-4.6-.26-.4A9.6 9.6 0 0 1 6.3 15c0-5.36 4.4-9.7 9.74-9.7 5.34 0 9.66 4.34 9.66 9.7 0 5.36-4.32 9.7-9.66 9.7Zm5.3-7.26c-.29-.15-1.7-.84-1.97-.94-.26-.1-.46-.15-.65.15-.19.29-.75.94-.92 1.13-.17.19-.34.22-.63.07-.29-.15-1.22-.45-2.32-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.15-.65-1.58-.9-2.16-.24-.57-.48-.5-.65-.5-.17 0-.36-.02-.55-.02s-.51.07-.78.36c-.26.29-1.02 1-1.02 2.44 0 1.43 1.05 2.82 1.19 3.01.15.19 2.06 3.15 5 4.42.7.3 1.24.48 1.67.61.7.22 1.34.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.34Z"/></svg>
+</a>
+
+<nav class="bottom-nav" aria-label="Primary">
+  <div class="bottom-nav-inner">
+    <a href="index.html" class="bottom-nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
+      Home
+    </a>
+    <a href="buy.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
+      Buy Data
+    </a>
+    <a href="track.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      Track
+    </a>
+    <a href="index.html#faq" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg>
+      FAQ
+    </a>
+  </div>
+</nav>
+
+<script src="js/theme.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
