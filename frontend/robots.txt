@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://datainn.onrender.com/sitemap.xml
