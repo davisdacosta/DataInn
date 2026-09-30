@@ -1,96 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<script>
-  (function () {
-    try {
-      var t = localStorage.getItem('datainn-theme');
-      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
-    } catch (e) {}
-  })();
-</script>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<!-- Favicon Icon -->
- <link rel="icon" type="image/png" sizes="32x32" href="assets/new-favicon-datainn-removebg-preview.png" />
-
-<title>Track your order — DataInn</title>
-<meta name="description" content="Look up the status of a DataInn data bundle order using your order reference." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="css/styles.css" rel="stylesheet" />
-<link href="css/components.css" rel="stylesheet" />
-</head>
-<body class="has-bottom-nav">
-
-<header class="navbar">
-  <div class="container">
-    <a href="index.html" class="brand">
-      <img src="assets/New-dataInn-logo.png" alt="DataInn" class="brand-logo" />
-      <span class="brand-name">DataInn</span>
-    </a>
-    <div class="nav-right">
-      <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle dark mode">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
-      </button>
-      <a href="buy.html" class="btn btn-primary" style="padding:10px 18px;">Buy Data</a>
-    </div>
-  </div>
-</header>
-
-<main class="track-shell">
-  <div class="step-panel">
-    <h2>Track your order</h2>
-    <p class="step-sub">Enter the order reference from your receipt or confirmation email.</p>
-    <form id="form-track" novalidate>
-      <div class="field">
-        <label for="input-reference">Order reference</label>
-        <input type="text" id="input-reference" placeholder="DATA-20260924-AB12CD" autocapitalize="characters" autocomplete="off" />
-        <p class="field-error" id="error-reference">Enter your order reference to continue.</p>
-      </div>
-      <button type="submit" class="btn btn-primary btn-block">Track order</button>
-    </form>
-  </div>
-</main>
-
-<a class="whatsapp-fab" href="https://wa.me/233202209611" target="_blank" rel="noopener" aria-label="Chat with DataInn on WhatsApp">
-  <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.04 3C9.4 3 4 8.36 4 15c0 2.29.64 4.44 1.76 6.27L4 29l7.94-1.7A11.9 11.9 0 0 0 16.04 27C22.68 27 28 21.64 28 15S22.68 3 16.04 3Zm0 21.7c-1.96 0-3.83-.53-5.44-1.5l-.39-.23-4.7 1 1.03-4.6-.26-.4A9.6 9.6 0 0 1 6.3 15c0-5.36 4.4-9.7 9.74-9.7 5.34 0 9.66 4.34 9.66 9.7 0 5.36-4.32 9.7-9.66 9.7Zm5.3-7.26c-.29-.15-1.7-.84-1.97-.94-.26-.1-.46-.15-.65.15-.19.29-.75.94-.92 1.13-.17.19-.34.22-.63.07-.29-.15-1.22-.45-2.32-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.15-.65-1.58-.9-2.16-.24-.57-.48-.5-.65-.5-.17 0-.36-.02-.55-.02s-.51.07-.78.36c-.26.29-1.02 1-1.02 2.44 0 1.43 1.05 2.82 1.19 3.01.15.19 2.06 3.15 5 4.42.7.3 1.24.48 1.67.61.7.22 1.34.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.34Z"/></svg>
-</a>
-
-<nav class="bottom-nav" aria-label="Primary">
-  <div class="bottom-nav-inner">
-    <a href="index.html" class="bottom-nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
-      Home
-    </a>
-    <a href="buy.html" class="bottom-nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
-      Buy Data
-    </a>
-    <a href="track.html" class="bottom-nav-item active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      Track
-    </a>
-    <a href="index.html#faq" class="bottom-nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg>
-      FAQ
-    </a>
-  </div>
-</nav>
-
-<script src="js/theme.js"></script>
-<script>
-  document.getElementById('form-track').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const input = document.getElementById('input-reference');
-    const error = document.getElementById('error-reference');
-    const value = input.value.trim();
-    const valid = value.length > 0;
-    input.classList.toggle('has-error', !valid);
-    error.classList.toggle('visible', !valid);
-    if (!valid) return;
-    window.location.href = 'success.html?ref=' + encodeURIComponent(value);
-  });
-</script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0B132B" />
+    <meta name="description" content="Check the payment and delivery status of your DataInn order." />
+    <link rel="icon" type="image/png" href="/assets/new-favicon-datainn-removebg-preview.png" />
+    <title>Track your order | DataInn</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

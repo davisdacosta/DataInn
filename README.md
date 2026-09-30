@@ -11,11 +11,11 @@ brand shown to customers, and it never appears anywhere in the frontend.
 
 ## 1. What this project does
 
-- **Frontend** (`frontend/`): a fast, static, vanilla HTML/CSS/JS storefront —
-  home page, a 7-step buy flow, an order-tracking page, and success/failed
-  result pages. Light/dark mode, a mobile bottom tab bar, and a WhatsApp
-  contact button are built in (see "Branding & UI" below).
-- **Backend** (`backend/`): a Node.js/Express API that is the *only* thing
+- **Frontend** (`frontend/`): a React storefront built with Vite — home page,
+  a 7-step buy flow, order tracking, and success/failed result pages. Shared
+  components, light/dark mode, responsive mobile navigation, and a WhatsApp
+  contact button support future feature growth.
+- **Backend** (`backend/`): a Node.js/Express API that is the _only_ thing
   that talks to DataSika and Paystack. It owns pricing, validation, the
   order/payment/delivery state machine, and webhook verification.
 
@@ -45,18 +45,18 @@ secret key. It only ever calls **our own** backend.
 ```
 project-root/
   frontend/
-    index.html, buy.html, track.html, success.html, failed.html
-    assets/logo.svg    — placeholder brand mark (swap this file — see "Branding & UI")
-    css/styles.css     — design tokens: colors, type scale, spacing, light/dark theme
-    css/components.css — navbar, hero, cards, buttons, bottom nav, WhatsApp button, modals
-    js/config.js       — API base URL (the one line to change per environment)
-    js/api.js          — fetch wrapper for our backend
-    js/validation.js   — client-side phone/email checks (UX only)
-    js/ui.js           — reusable modal, button-loading, formatting helpers
-    js/theme.js        — light/dark mode toggle + persistence
-    js/app.js          — reserved for future home-page-only interactions
-    js/checkout.js     — the 7-step buy flow + Paystack integration
-    js/result.js        — shared helper for success/failed pages
+    index.html, buy.html, track.html, success.html, failed.html — Vite entry pages
+    src/
+      App.jsx           — page selection, document titles, and theme state
+      api.js            — typed-by-contract fetch wrapper for the backend API
+      components/       — shared navigation and theme controls
+      pages/            — home, checkout, tracking, and order result views
+      styles.css        — responsive design tokens and component styles
+      utils.js          — formatting and legacy URL helpers
+    assets/             — brand logo and favicon
+    package.json        — frontend scripts and dependencies
+    vite.config.js      — multipage build and local API proxy
+    .env.example        — optional API base override
   backend/
     src/
       server.js               — Express app entrypoint
@@ -91,20 +91,27 @@ cd backend
 npm install
 ```
 
-The frontend has no build step and no dependencies.
-
-## 5. Run the frontend
-
-Any static file server works — the frontend is plain HTML/CSS/JS:
+Install frontend dependencies separately:
 
 ```bash
 cd frontend
-npx serve -l 8080
-# or: python3 -m http.server 8080
+npm install
 ```
 
-Open `http://localhost:8080`. If your backend runs somewhere other than
-`http://localhost:5000`, update the one line in `frontend/js/config.js`.
+## 5. Run the frontend
+
+Start Vite for local development:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open the URL Vite prints (normally `http://localhost:5173`). The development
+server proxies `/api` to `http://localhost:5000`, so run the backend as well.
+Set `VITE_API_BASE` in `frontend/.env.local` only if you need a different API
+base URL. For static hosting, run `npm run build` and publish `frontend/dist/`;
+the build keeps the existing `.html` page URLs for order callbacks.
 
 ## 6. Run the backend
 
@@ -135,19 +142,19 @@ is ever sent to the browser — the only exception is `PAYSTACK_PUBLIC_KEY`,
 which the backend hands to the frontend at runtime via
 `GET /api/payments/config` (it's meant to be public).
 
-| Variable | Purpose |
-| --- | --- |
-| `PORT` | backend port |
-| `NODE_ENV` | `development` or `production` |
-| `MOCK_MODE` | `true` to run without real credentials (see below) — forced `false` whenever `NODE_ENV=production` |
-| `FRONTEND_URL` | your deployed frontend origin(s), comma-separated — used for CORS and Paystack's callback URL in production |
-| `DATASIKA_API_KEY` | from your DataSika developer portal |
-| `DATASIKA_BASE_URL` | DataSika's API base — already set correctly |
-| `DATASIKA_WEBHOOK_SECRET` | from the DataSika developer console, once you register a webhook (see below) |
-| `PAYSTACK_SECRET_KEY` | from your Paystack dashboard — server-side only |
-| `PAYSTACK_PUBLIC_KEY` | from your Paystack dashboard — safe to expose |
-| `DATABASE_URL` | your Postgres connection string — see "Database modes" |
-| `RATE_LIMIT_*` | tune per-key limits if needed |
+| Variable                  | Purpose                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `PORT`                    | backend port                                                                                                |
+| `NODE_ENV`                | `development` or `production`                                                                               |
+| `MOCK_MODE`               | `true` to run without real credentials (see below) — forced `false` whenever `NODE_ENV=production`          |
+| `FRONTEND_URL`            | your deployed frontend origin(s), comma-separated — used for CORS and Paystack's callback URL in production |
+| `DATASIKA_API_KEY`        | from your DataSika developer portal                                                                         |
+| `DATASIKA_BASE_URL`       | DataSika's API base — already set correctly                                                                 |
+| `DATASIKA_WEBHOOK_SECRET` | from the DataSika developer console, once you register a webhook (see below)                                |
+| `PAYSTACK_SECRET_KEY`     | from your Paystack dashboard — server-side only                                                             |
+| `PAYSTACK_PUBLIC_KEY`     | from your Paystack dashboard — safe to expose                                                               |
+| `DATABASE_URL`            | your Postgres connection string — see "Database modes"                                                      |
+| `RATE_LIMIT_*`            | tune per-key limits if needed                                                                               |
 
 ## 8. Adding your DataSika API key
 
@@ -195,7 +202,7 @@ This app runs in one of two modes, chosen automatically by whether
 - **`DATABASE_URL` set** → every repository (`src/db/*Repository.js`) talks
   to real Postgres via the `pg` pool in `src/db/pool.js`.
 - **`DATABASE_URL` unset** → the same repositories fall back to an
-  in-memory store (`src/db/memoryStore.js`) with the *identical* interface.
+  in-memory store (`src/db/memoryStore.js`) with the _identical_ interface.
   Nothing in your services or controllers changes. This is for local
   development/testing only — data does not persist across restarts, and
   `config/env.js` refuses to start this way when `NODE_ENV=production`.
@@ -250,7 +257,7 @@ isn't already terminal.
 ## 14. How the DataSika wallet is used
 
 DataSika charges every `api-buy-data` call to your DataSika wallet balance,
-not to the customer directly — the customer pays *you* via Paystack, and
+not to the customer directly — the customer pays _you_ via Paystack, and
 you pay DataSika from your wallet. Top up your wallet on DataSika's portal;
 `insufficient_balance` and `spend_cap_exceeded` are handled as ordinary
 provider errors with a customer-safe message (see `utils/errors.js`).
@@ -302,9 +309,9 @@ ship live.
 
 Three independent layers:
 
-1. **Frontend**: the "Pay" button goes through a confirm modal and is
-   disabled the moment it's pressed, so a double-click can't fire two
-   requests.
+1. **Frontend**: checkout uses a confirmation modal and an in-memory
+   payment-start guard, so a double-click cannot send duplicate payment
+   initialization requests.
 2. **`deliveryService.fulfil()`**: before ever calling DataSika, it checks
    whether the order already has a `datasika_order_id` or a
    `delivery_status` of `processing`/`delivered` — if so, it's a no-op.
@@ -317,31 +324,20 @@ Three independent layers:
 
 ## Branding & UI
 
-- **Logo**: `frontend/assets/logo.svg` is a placeholder mark. Drop in your
-  real logo as the same file (same name/path) and every page picks it up
-  automatically — no HTML changes needed. It renders at 34×34px in the
-  navbar; an SVG or a square PNG/WebP both work.
-- **Colors & type**: every color is a CSS custom property in
-  `frontend/css/styles.css` (`--color-primary`, `--color-accent`, etc.) —
-  change them there once rather than hunting through component files.
-  Headings use Plus Jakarta Sans, body text uses Inter.
-- **Light/dark mode**: a toggle button sits in the navbar on every page
-  (desktop and mobile). It defaults to the visitor's OS preference, then
-  remembers their explicit choice in `localStorage` (`datainn-theme`) via
-  `js/theme.js`. The inline snippet at the top of each page's `<head>`
-  applies the saved theme before first paint so there's no flash.
-- **Mobile bottom tab bar**: below 640px, a fixed app-style tab bar
-  (Home / Buy Data / Track / FAQ) replaces top-nav links for primary
-  navigation, matching a native-app feel. Each page hardcodes which tab is
-  "active" in its own markup — there's no client-side router.
-- **Order tracking**: `track.html` is a small standalone page (also reachable
-  from the bottom tab bar) where anyone can paste an order reference and
-  jump straight to its live status — it reuses the existing
-  `GET /api/orders/:reference` endpoint, no backend changes required.
-- **WhatsApp button**: the glowing floating button on every page links to
-  `https://wa.me/233202209611`. To change the number, update the `href` in
-  each page's `<a class="whatsapp-fab">` element (five occurrences —
-  `index.html`, `buy.html`, `track.html`, `success.html`, `failed.html`).
+- **Logo**: the shared header and footer in `frontend/src/components/SiteLayout.jsx`
+  use `frontend/assets/New-dataInn-logo.png`.
+- **Colors & type**: shared design tokens and responsive styles live in
+  `frontend/src/styles.css`; adjust those variables first when changing the theme.
+- **Light/dark mode**: the shared `ThemeToggle` component uses the visitor's
+  system preference initially, then persists the explicit choice as
+  `datainn-theme` in `localStorage`.
+- **Mobile navigation**: `SiteLayout` switches to a fixed four-item tab bar
+  on narrow screens; active state follows the current page.
+- **Order tracking**: `TrackPage` uses the existing
+  `GET /api/orders/:reference` endpoint. The frontend migration does not
+  require backend changes.
+- **WhatsApp contact**: the shared floating link is in `SiteLayout.jsx` and
+  points to `https://wa.me/233202209611`.
 
 ## Testing this yourself
 
