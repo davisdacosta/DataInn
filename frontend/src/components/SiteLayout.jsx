@@ -1,5 +1,10 @@
 import { ArrowUpRight, CircleHelp, House, Search, Smartphone } from 'lucide-react';
+import { SiWhatsapp } from 'react-icons/si';
+import logo from '../../assets/New-dataInn-logo.png';
 import { ThemeToggle } from './ThemeToggle.jsx';
+
+const SUPPORT_URL = 'https://wa.me/233240315280';
+const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029Vb82YJkId7nW9pP60K2D';
 
 const links = [
   { href: '/', path: '/', label: 'Home', Icon: House },
@@ -13,7 +18,7 @@ export function SiteLayout({ children, theme, onToggleTheme, active = '/' }) {
       <header className="site-header">
         <div className="header-inner">
           <a className="brand" href="/" aria-label="DataInn home">
-            <img src="/assets/New-dataInn-logo.png" alt="" />
+            <img src={logo} alt="" />
             <span>data<span>inn</span></span>
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
@@ -34,18 +39,26 @@ export function SiteLayout({ children, theme, onToggleTheme, active = '/' }) {
       <footer className="site-footer">
         <div className="footer-inner">
           <a className="brand brand-footer" href="/">
-            <img src="/assets/New-dataInn-logo.png" alt="" />
+            <img src={logo} alt="" />
             <span>data<span>inn</span></span>
           </a>
           <p>More data. Less waiting.</p>
-          <a href="/#faq"><CircleHelp size={16} /> Help & FAQs</a>
+          <a href={SUPPORT_URL} target="_blank" rel="noreferrer"><CircleHelp size={16} /> Help centre</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms of Service</a>
           <small>© 2026 DataInn · Payments secured by Paystack</small>
         </div>
       </footer>
 
-      <a className="whatsapp-link" href="https://wa.me/233202209611" target="_blank" rel="noreferrer" aria-label="Contact DataInn on WhatsApp">
-        <span className="whatsapp-mark">wa</span>
-        <span className="whatsapp-copy">Need help?</span>
+      <a
+        className="whatsapp-link"
+        href={WHATSAPP_CHANNEL_URL}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Join the DataInn WhatsApp channel"
+        data-tooltip="Join Our Channel"
+      >
+        <SiWhatsapp className="whatsapp-icon" aria-hidden="true" />
       </a>
 
       <nav className="mobile-nav" aria-label="Primary navigation">

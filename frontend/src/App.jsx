@@ -3,6 +3,7 @@ import { SiteLayout } from './components/SiteLayout.jsx';
 import { SplashLoader } from './components/SplashLoader.jsx';
 import { CheckoutPage } from './pages/CheckoutPage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
+import { LegalPage } from './pages/LegalPage.jsx';
 import { ResultPage } from './pages/ResultPage.jsx';
 import { TrackPage } from './pages/TrackPage.jsx';
 import { normalizePath } from './utils.js';
@@ -40,6 +41,8 @@ export default function App() {
       '/track': 'Track your order | DataInn',
       '/success': 'Order delivered | DataInn',
       '/failed': 'Order status | DataInn',
+      '/privacy': 'Privacy Policy | DataInn',
+      '/terms': 'Terms of Service | DataInn',
     };
     document.title = titles[path] || 'DataInn | Data bundles in Ghana';
   }, [path]);
@@ -50,6 +53,7 @@ export default function App() {
   else if (path === '/buy') page = <CheckoutPage />;
   else if (path === '/track') page = <TrackPage />;
   else if (path === '/success' || path === '/failed') page = <ResultPage kind={path.slice(1)} />;
+  else if (path === '/privacy' || path === '/terms') page = <LegalPage kind={path.slice(1)} />;
   else {
     active = '/';
     page = <HomePage />;

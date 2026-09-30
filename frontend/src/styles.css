@@ -228,8 +228,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .footer-inner > p { margin: 0 auto 0 0; color: #9aadaa; font-size: 11px; }
 .footer-inner > a:not(.brand) { display: inline-flex; align-items: center; gap: 7px; color: #d9e5e0; font-size: 11px; }
 .footer-inner small { color: #90a39d; font-size: 10px; }
-.whatsapp-link { position: fixed; right: 23px; bottom: 22px; z-index: 25; height: 47px; padding: 0 16px 0 7px; display: flex; align-items: center; gap: 10px; background: #e3f8dd; border: 1px solid #c8e8c0; color: #235a36; border-radius: 24px; box-shadow: 0 8px 26px rgba(13, 44, 31, .13); font-size: 12px; font-weight: 700; }
-.whatsapp-mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: #2fa866; color: #fff; text-transform: uppercase; font: 700 11px 'Manrope', sans-serif; }
+.whatsapp-link { width: 56px; height: 56px; position: fixed; right: 23px; bottom: 22px; z-index: 25; display: grid; place-items: center; background: #25D366; border: 1px solid #1FBD5B; color: #ffffff; border-radius: 50%; box-shadow: 0 8px 26px rgba(13, 44, 31, .2); transition: transform .18s ease, box-shadow .18s ease; }
+.whatsapp-link::before { content: ''; position: absolute; inset: -2px; border: 2px solid #25D366; border-radius: inherit; pointer-events: none; animation: whatsapp-ripple 2s ease-out infinite; }
+.whatsapp-link::after { content: attr(data-tooltip); position: absolute; right: calc(100% + 12px); top: 50%; padding: 8px 11px; transform: translate(5px, -50%); opacity: 0; visibility: hidden; white-space: nowrap; border-radius: 4px; background: var(--brand-primary); color: #ffffff; box-shadow: 0 5px 18px rgba(11, 19, 43, .18); font-size: 12px; font-weight: 700; transition: opacity .16s ease, transform .16s ease, visibility .16s ease; }
+.whatsapp-link:hover, .whatsapp-link:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(13, 44, 31, .28); }
+.whatsapp-link:hover::after, .whatsapp-link:focus-visible::after { transform: translate(0, -50%); opacity: 1; visibility: visible; }
+.whatsapp-icon { width: 29px; height: 29px; position: relative; z-index: 1; }
+@keyframes whatsapp-ripple { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55); opacity: .9; } 100% { box-shadow: 0 0 0 19px rgba(37, 211, 102, 0); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .whatsapp-link, .whatsapp-link::before, .whatsapp-link::after { animation: none; transition: none; } }
 .mobile-nav { display: none; }
 
 /* Checkout */
@@ -360,6 +366,21 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 
 /* Tracking and order result */
 .track-page { min-height: calc(100vh - 164px); padding-block: 85px 100px; }
+.legal-page { min-height: calc(100vh - 164px); padding-block: 66px 92px; }
+.legal-back { margin-bottom: 28px; display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.legal-back:hover { color: var(--teal); }
+.legal-heading { padding-bottom: 26px; border-bottom: 1px solid var(--line-strong); }
+.legal-heading .eyebrow { margin-bottom: 12px; }
+.legal-heading h1 { margin-bottom: 10px; font-size: 42px; }
+.legal-heading > p:last-child { margin: 0; color: var(--muted); font-size: 12px; }
+.legal-content { max-width: 760px; padding-top: 12px; }
+.legal-content section { padding-top: 25px; }
+.legal-content h2 { margin-bottom: 9px; font-size: 18px; }
+.legal-content p, .legal-content li { color: var(--muted); font-size: 13px; line-height: 1.75; }
+.legal-content p { margin-bottom: 10px; }
+.legal-content ul { margin: 8px 0 0; padding-left: 20px; }
+.legal-content li + li { margin-top: 6px; }
+.legal-content a { color: var(--teal); text-decoration: underline; text-underline-offset: 3px; }
 .track-intro { max-width: 560px; margin-inline: auto; text-align: center; }
 .track-intro .eyebrow { justify-content: center; }
 .track-intro h1 { margin-bottom: 15px; font-size: 48px; }
@@ -500,9 +521,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .brand-footer img { width: 24px; height: 24px; }
   .footer-inner > a:not(.brand) { font-size: 10px; }
   .footer-inner small { width: 100%; padding-bottom: 6px; font-size: 9px; }
-  .whatsapp-link { right: 12px; bottom: calc(var(--bottom-height) + env(safe-area-inset-bottom) + 11px); width: 43px; height: 43px; padding: 0; justify-content: center; }
-  .whatsapp-copy { display: none; }
-  .whatsapp-mark { width: 31px; height: 31px; }
+  .whatsapp-link { right: 12px; bottom: calc(var(--bottom-height) + env(safe-area-inset-bottom) + 11px); width: 48px; height: 48px; }
+  .whatsapp-icon { width: 25px; height: 25px; }
+  .legal-page { padding-block: 45px 65px; }
+  .legal-heading h1 { font-size: 33px; }
+  .legal-content h2 { font-size: 16px; }
+  .legal-content p, .legal-content li { font-size: 12px; }
 
   .checkout-page { width: calc(100% - 36px); min-height: calc(100vh - 64px); padding-block: 17px 34px; }
   .checkout-topline { font-size: 10px; }

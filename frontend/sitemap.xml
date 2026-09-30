@@ -7,4 +7,16 @@
     <priority>1.0</priority>
   </url>
 
+  <url>
+    <loc>https://datainn.onrender.com/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://datainn.onrender.com/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
 </urlset>

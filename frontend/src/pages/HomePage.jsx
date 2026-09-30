@@ -131,7 +131,7 @@ export function HomePage() {
 
       <section className="faq-section" id="faq">
         <div className="page-width faq-layout">
-          <div className="faq-heading"><p className="eyebrow eyebrow-dark"><CircleHelp size={14} /> A few answers</p><h2>Good to<br />know.</h2><p>Need a hand with an order? <a href="https://wa.me/233202209611" target="_blank" rel="noreferrer">Talk to us on WhatsApp <ArrowRight size={14} /></a></p></div>
+          <div className="faq-heading"><p className="eyebrow eyebrow-dark"><CircleHelp size={14} /> A few answers</p><h2>Good to<br />know.</h2><p>Need a hand with an order? <a href="https://wa.me/233240315280" target="_blank" rel="noreferrer">Talk to us on WhatsApp <ArrowRight size={14} /></a></p></div>
           <div className="faq-list">{faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
         </div>
       </section>

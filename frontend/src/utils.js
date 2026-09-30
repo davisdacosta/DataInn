@@ -19,6 +19,8 @@ export function normalizePath(pathname) {
     '/track.html': '/track',
     '/success.html': '/success',
     '/failed.html': '/failed',
+    '/privacy.html': '/privacy',
+    '/terms.html': '/terms',
   };
   return aliases[path] || path;
 }

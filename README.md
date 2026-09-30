@@ -100,15 +100,15 @@ npm install
 
 ## 5. Run the frontend
 
-Start Vite for local development:
+From the project root, start Vite for local development:
 
 ```bash
-cd frontend
 npm run dev
 ```
 
 Open the URL Vite prints (normally `http://localhost:5173`). The development
 server proxies `/api` to `http://localhost:5000`, so run the backend as well.
+The root `npm run build` and `npm run preview` commands also forward to the frontend package.
 Set `VITE_API_BASE` in `frontend/.env.local` only if you need a different API
 base URL. For static hosting, run `npm run build` and publish `frontend/dist/`;
 the build keeps the existing `.html` page URLs for order callbacks.
