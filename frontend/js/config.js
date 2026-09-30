@@ -4,5 +4,5 @@
  * - Production behind a reverse proxy on the same origin: set this to '/api'.
  */
 window.DATASIKA_CONFIG = {
-  API_BASE: 'http://localhost:5000/api',
+    API_BASE: 'https://datainn-ghana.onrender.com/api',
 };
