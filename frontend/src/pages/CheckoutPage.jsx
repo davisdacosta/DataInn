@@ -126,23 +126,9 @@ export function CheckoutPage() {
     });
   }
 
-  async function verifyAndContinue(orderToVerify = order) {
-    if (!orderToVerify) return;
-    setPaymentMessage('Verifying your payment…');
-    try {
-      const result = await api.verifyPayment(orderToVerify.reference);
-      setOrder(result.order);
-      if (result.order.paymentStatus !== 'success') {
-        window.location.assign(`/failed.html?ref=${encodeURIComponent(orderToVerify.reference)}&reason=payment`);
-        return;
-      }
-      setPaymentMessage('Payment confirmed. Sending your bundle…');
-      advance(6);
-    } catch (err) {
-      paymentStarted.current = false;
-      setError(err.message);
-      setStep(4);
-    }
+  function showPaymentResult(orderToCheck = order) {
+    if (!orderToCheck) return;
+    window.location.assign(`/success.html?ref=${encodeURIComponent(orderToCheck.reference)}`);
   }
 
   async function startPayment() {
@@ -164,15 +150,15 @@ export function CheckoutPage() {
       const payment = await api.initializePayment(currentOrder.reference);
       if (paymentConfig?.mockMode || !payment.publicKey) {
         setPaymentMessage('Completing test payment…');
-        window.setTimeout(() => verifyAndContinue(currentOrder), 800);
+        window.setTimeout(() => showPaymentResult(currentOrder), 800);
         return;
       }
       await loadPaystack();
-      let verified = false;
-      const verifyOnce = () => {
-        if (verified) return;
-        verified = true;
-        verifyAndContinue(currentOrder);
+      let resultOpened = false;
+      const openResultOnce = () => {
+        if (resultOpened) return;
+        resultOpened = true;
+        showPaymentResult(currentOrder);
       };
       const handler = window.PaystackPop.setup({
         key: payment.publicKey,
@@ -180,8 +166,8 @@ export function CheckoutPage() {
         amount: Math.round(plan.sellingPrice * 100),
         currency: plan.currency,
         ref: payment.reference,
-        onClose: verifyOnce,
-        callback: verifyOnce,
+        onClose: openResultOnce,
+        callback: openResultOnce,
       });
       setPaymentMessage('Waiting for payment…');
       handler.openIframe();

@@ -10,7 +10,16 @@ function errorHandler(err, req, res, next) {
       httpStatus: err.httpStatus,
       technicalDetail: err.technicalDetail,
     });
-    return res.status(err.httpStatus).json({ error: err.code, message: err.customerMessage });
+    const response = {
+      error: err.code,
+      message: err.customerMessage,
+      retryable: err.retryable,
+    };
+    if (err.retryAfter !== undefined) {
+      res.set('Retry-After', String(err.retryAfter));
+      response.retryAfter = err.retryAfter;
+    }
+    return res.status(err.httpStatus).json(response);
   }
 
   logger.error('Unhandled error', {

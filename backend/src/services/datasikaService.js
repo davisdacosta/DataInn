@@ -12,6 +12,18 @@ const client = axios.create({
   },
 });
 
+function getRetryAfterSeconds(headers, body) {
+  const value = body?.retry_after ?? headers?.['retry-after'];
+  if (value === undefined || value === null || value === '') return undefined;
+
+  const seconds = Number(value);
+  if (Number.isFinite(seconds) && seconds >= 0) return Math.ceil(seconds);
+
+  const retryAt = Date.parse(value);
+  if (!Number.isFinite(retryAt)) return undefined;
+  return Math.max(0, Math.ceil((retryAt - Date.now()) / 1000));
+}
+
 /** Convert any axios failure into our normalized AppError. */
 function handleAxiosError(err, context) {
   if (err.response) {
@@ -23,7 +35,9 @@ function handleAxiosError(err, context) {
       providerCode: code,
       providerMessage: body.message,
     });
-    throw fromDatasikaErrorCode(code, `${context}: HTTP ${err.response.status} ${JSON.stringify(body)}`);
+    throw fromDatasikaErrorCode(code, `${context}: HTTP ${err.response.status} ${JSON.stringify(body)}`, {
+      retryAfter: getRetryAfterSeconds(err.response.headers, body),
+    });
   }
   logger.error('DataSika request errored with no response (network/timeout)', {
     context,
