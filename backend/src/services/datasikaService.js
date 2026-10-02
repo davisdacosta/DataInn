@@ -51,16 +51,16 @@ function handleAxiosError(err, context) {
 // whole app can be built and tested with zero real credentials.
 // ---------------------------------------------------------------------
 const MOCK_CATALOG = [
-  { product_id: 'mock-mtn-1gb', network: 'MTN', bundle_gb: 1, price: 5.5, currency: 'GHS', validity: 'non-expiry' },
-  { product_id: 'mock-mtn-2gb', network: 'MTN', bundle_gb: 2, price: 10.5, currency: 'GHS', validity: 'non-expiry' },
-  { product_id: 'mock-mtn-5gb', network: 'MTN', bundle_gb: 5, price: 21.0, currency: 'GHS', validity: 'non-expiry' },
-  { product_id: 'mock-mtn-10gb', network: 'MTN', bundle_gb: 10, price: 39.0, currency: 'GHS', validity: 'non-expiry' },
-  { product_id: 'mock-telecel-1gb', network: 'Telecel', bundle_gb: 1, price: 6.0, currency: 'GHS', validity: '30 days' },
-  { product_id: 'mock-telecel-5gb', network: 'Telecel', bundle_gb: 5, price: 22.5, currency: 'GHS', validity: '30 days' },
-  { product_id: 'mock-telecel-10gb', network: 'Telecel', bundle_gb: 10, price: 41.0, currency: 'GHS', validity: '30 days' },
-  { product_id: 'mock-at-1gb', network: 'AirtelTigo', bundle_gb: 1, price: 5.75, currency: 'GHS', validity: '30 days' },
-  { product_id: 'mock-at-5gb', network: 'AirtelTigo', bundle_gb: 5, price: 21.5, currency: 'GHS', validity: '30 days' },
-  { product_id: 'mock-at-10gb', network: 'AirtelTigo', bundle_gb: 10, price: 40.0, currency: 'GHS', validity: '30 days' },
+  { product_id: 'mock-mtn-1gb', network: 'MTN', bundle_gb: 1, price: 5.5, currency: 'GHS', validity: '90 days' },
+  { product_id: 'mock-mtn-2gb', network: 'MTN', bundle_gb: 2, price: 10.5, currency: 'GHS', validity: '90 days' },
+  { product_id: 'mock-mtn-5gb', network: 'MTN', bundle_gb: 5, price: 21.0, currency: 'GHS', validity: '90 days' },
+  { product_id: 'mock-mtn-10gb', network: 'MTN', bundle_gb: 10, price: 39.0, currency: 'GHS', validity: '90 days' },
+  { product_id: 'mock-telecel-1gb', network: 'Telecel', bundle_gb: 1, price: 6.0, currency: 'GHS', validity: 'Non-expiry' },
+  { product_id: 'mock-telecel-5gb', network: 'Telecel', bundle_gb: 5, price: 22.5, currency: 'GHS', validity: 'Non-expiry' },
+  { product_id: 'mock-telecel-10gb', network: 'Telecel', bundle_gb: 10, price: 41.0, currency: 'GHS', validity: 'Non-expiry' },
+  { product_id: 'mock-at-1gb', network: 'AirtelTigo', bundle_gb: 1, price: 5.75, currency: 'GHS', validity: '60 days' },
+  { product_id: 'mock-at-5gb', network: 'AirtelTigo', bundle_gb: 5, price: 21.5, currency: 'GHS', validity: '60 days' },
+  { product_id: 'mock-at-10gb', network: 'AirtelTigo', bundle_gb: 10, price: 40.0, currency: 'GHS', validity: '60 days' },
 ];
 
 // Mock orders live for the process lifetime so status polling behaves

@@ -888,67 +888,69 @@ summary:focus-visible {
 }
 .network-options {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 .network-option {
+  --network-accent: var(--teal);
+  --network-on-accent: #fff;
   width: 100%;
-  min-height: 76px;
-  padding: 14px 16px;
+  min-height: 54px;
+  padding: 9px 10px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  justify-content: center;
+  background: color-mix(in srgb, var(--network-accent) 10%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--network-accent) 45%, var(--line));
   border-radius: 5px;
+  color: var(--ink);
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   transition:
     border-color 0.15s,
     background 0.15s;
 }
+.network-option.mtn {
+  --network-accent: #f4c400;
+  --network-on-accent: #211b00;
+}
+.network-option.telecel {
+  --network-accent: #df3346;
+}
+.network-option.airteltigo {
+  --network-accent: #087de0;
+}
 .network-option:hover,
-.network-option.selected,
-.bundle-option:hover,
-.bundle-option.selected {
+.bundle-option:hover {
   border-color: var(--teal);
 }
-.network-option.selected,
-.bundle-option.selected {
-  background: color-mix(in srgb, var(--teal) 5%, var(--paper));
+.network-option:hover {
+  border-color: var(--network-accent);
+}
+.network-option.selected {
+  background: var(--network-accent);
+  border-color: var(--network-accent);
+  color: var(--network-on-accent);
+}
+.network-option.selected .network-option-copy small {
+  color: inherit;
+  opacity: 0.82;
 }
 .network-option-copy {
-  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 2px;
 }
 .network-option-copy strong {
   font:
-    700 14px "Manrope",
+    700 13px "Manrope",
     sans-serif;
 }
 .network-option-copy small {
   color: var(--muted);
-  font-size: 11px;
-}
-.radio-mark {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
-  border: 1.5px solid var(--line-strong);
-  border-radius: 50%;
-}
-.selected .radio-mark {
-  display: grid;
-  place-items: center;
-  border-color: var(--teal);
-}
-.selected .radio-mark::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--teal);
+  font-size: 10px;
 }
 .step-actions {
   margin-top: 21px;
@@ -961,9 +963,11 @@ summary:focus-visible {
 }
 .bundle-options {
   display: grid;
-  gap: 9px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 .inline-back {
+  grid-column: 1 / -1;
   justify-self: start;
   margin-bottom: 6px;
   padding: 5px 0;
@@ -982,46 +986,127 @@ summary:focus-visible {
 }
 .bundle-option {
   width: 100%;
-  min-height: 72px;
-  padding: 12px 15px;
+  min-width: 0;
+  min-height: 139px;
+  padding: 14px;
   display: flex;
-  align-items: center;
-  gap: 15px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   text-align: left;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.15s;
+}
+.bundle-option:hover {
+  transform: translateY(-1px);
+}
+.bundle-network {
+  max-width: 100%;
+  padding: 4px 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bundle-network.mtn {
+  background: #ffdc28;
+  color: #282800;
+}
+.bundle-network.telecel {
+  background: #ef6c83;
+  color: #fff;
+}
+.bundle-network.airteltigo {
+  background: #e94542;
+  color: #fff;
+}
+.bundle-network.other {
+  background: #dbeafe;
+  color: var(--teal);
 }
 .bundle-gb {
-  min-width: 48px;
+  min-width: 0;
   font:
-    800 21px "Manrope",
+    800 25px "Manrope",
     sans-serif;
 }
 .bundle-gb small {
   margin-left: 3px;
   color: var(--muted);
-  font-size: 11px;
-}
-.bundle-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.bundle-info strong {
   font-size: 12px;
-}
-.bundle-info small {
-  color: var(--muted);
-  font-size: 11px;
 }
 .bundle-price {
   font:
     700 13px "Manrope",
     sans-serif;
   white-space: nowrap;
+  color: var(--brand-secondary);
+}
+.bundle-validity {
+  max-width: 100%;
+  padding: 3px 7px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--brand-accent) 10%, var(--paper));
+  color: var(--teal);
+  font-size: 9px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.important-notice {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  padding: 16px 18px;
+  background: color-mix(in srgb, #e3a008 8%, var(--paper));
+  border: 1px solid color-mix(in srgb, #e3a008 38%, var(--line));
+  border-radius: 6px;
+}
+.important-notice-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a76a00;
+}
+:root[data-theme="dark"] .important-notice-heading {
+  color: #f5c451;
+}
+.important-notice-heading h2 {
+  margin: 0;
+  font:
+    700 16px "Manrope",
+    sans-serif;
+}
+.important-notice-intro {
+  margin: 6px 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.important-notice h3 {
+  margin: 0 0 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.important-notice ul {
+  margin: 0;
+  padding-left: 19px;
+  display: grid;
+  gap: 8px;
+}
+.important-notice li {
+  padding-left: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
 }
 .checkout-form {
   max-width: 520px;
@@ -2155,15 +2240,14 @@ summary:focus-visible {
     font-size: 9px;
   }
   .network-option {
-    min-height: 69px;
-    padding-inline: 12px;
-    gap: 11px;
+    min-height: 48px;
+    padding: 8px 4px;
   }
   .network-option-copy strong {
-    font-size: 13px;
+    font-size: 11px;
   }
   .network-option-copy small {
-    font-size: 10px;
+    display: none;
   }
   .step-actions {
     margin-top: 16px;
@@ -2176,25 +2260,16 @@ summary:focus-visible {
     font-size: 12px;
   }
   .bundle-option {
-    min-height: 67px;
-    padding-inline: 11px;
-    gap: 9px;
+    min-height: 124px;
+    padding: 11px;
+    gap: 6px;
   }
   .bundle-gb {
-    min-width: 41px;
-    font-size: 19px;
+    min-width: 0;
+    font-size: 22px;
   }
-  .bundle-info strong,
   .bundle-price {
-    font-size: 11px;
-  }
-  .bundle-info small {
-    font-size: 9px;
-  }
-  .bundle-option .radio-mark {
-    width: 16px;
-    height: 16px;
-    flex-basis: 16px;
+    font-size: 12px;
   }
   .review-panel {
     padding: 15px;

@@ -16,6 +16,7 @@
 const datasikaService = require('../services/datasikaService');
 const plansRepository = require('./plansRepository');
 const logger = require('../utils/logger');
+const { getPlanValidity } = require('../utils/planValidity');
 
 const DEFAULT_MARKUP = 1.15; // +15% over provider_price on first import
 
@@ -35,8 +36,12 @@ async function syncPlansFromCatalog() {
   let updated = 0;
 
   for (const item of bundles.items) {
+    const normalizedItem = {
+      ...item,
+      validity: getPlanValidity(item.network, item.validity),
+    };
     const existing = await plansRepository.findByProviderProductId(item.product_id);
-    await plansRepository.upsertFromCatalogItem(item, defaultSellingPrice);
+    await plansRepository.upsertFromCatalogItem(normalizedItem, defaultSellingPrice);
     if (existing) updated += 1;
     else created += 1;
   }

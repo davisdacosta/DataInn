@@ -10,6 +10,14 @@ const networkMeta = {
   Telecel: { short: 'T', className: 'telecel' },
   AirtelTigo: { short: 'A', className: 'airteltigo' },
 };
+const commonNoticeItems = [
+  'Delivery times may vary based on network conditions and order volume.',
+  'Phone number must not owe airtime.',
+  'This service does not work on Turbonet SIM cards.',
+  'Do not place another order for the same number until the current order is completed.',
+  'No refunds for wrong numbers. Double-check the number before you pay.',
+];
+const mtnVerificationNotice = 'MTN first-time order: if this number has never received MTN data through us before, the network may put the order into “Awaiting Verification” to verify the number — a one-time step that normally takes up to a week, and in some cases a couple of weeks. It still delivers automatically, and every future order to that same number goes straight through the normal process. It’s not a failed order.';
 
 function stepName(step) {
   return ['Choose network', 'Choose bundle', 'Recipient number', 'Your email', 'Review order', 'Secure payment', 'Delivery status'][step];
@@ -50,6 +58,9 @@ export function CheckoutPage() {
   const bundles = useMemo(() => plans
     .filter((item) => item.network === network)
     .sort((a, b) => a.bundleGb - b.bundleGb), [network, plans]);
+  const noticeItems = network === 'MTN'
+    ? [...commonNoticeItems, mtnVerificationNotice]
+    : commonNoticeItems;
 
   useEffect(() => {
     if (step !== 6 || !order?.reference) return undefined;
@@ -204,19 +215,31 @@ export function CheckoutPage() {
           {!loading && !error && step === 0 && plans.length > 0 && <div className="network-options">
             {networks.map((name) => {
               const meta = networkMeta[name] || { short: name.slice(0, 1).toUpperCase(), className: 'other' };
-              return <button className={`network-option ${network === name ? 'selected' : ''}`} key={name} type="button" onClick={() => { setNetwork(name); setPlan(null); }} aria-pressed={network === name}>
-                <span className={`network-symbol ${meta.className}`}>{meta.short}</span><span className="network-option-copy"><strong>{name}</strong><small>{plans.filter((item) => item.network === name).length} bundles available</small></span><span className="radio-mark" />
+              return <button className={`network-option ${meta.className} ${network === name ? 'selected' : ''}`} key={name} type="button" onClick={() => { setNetwork(name); setPlan(null); advance(1); }} aria-pressed={network === name}>
+                <span className="network-option-copy"><strong>{name}</strong><small>{plans.filter((item) => item.network === name).length} bundles</small></span>
               </button>;
             })}
-            <div className="step-actions"><span /><button className="button button-ink" type="button" disabled={!network} onClick={() => advance(1)}>Choose bundle <ArrowRight size={17} /></button></div>
           </div>}
 
           {!loading && !error && step === 1 && <div className="bundle-options">
             <button className="inline-back" type="button" onClick={goBack}><ArrowLeft size={15} /> Change network</button>
-            {bundles.map((item) => <button className={`bundle-option ${plan?.id === item.id ? 'selected' : ''}`} type="button" key={item.id} onClick={() => setPlan(item)} aria-pressed={plan?.id === item.id}>
-              <span className="bundle-gb">{item.bundleGb}<small>GB</small></span><span className="bundle-info"><strong>{item.validity}</strong><small>{item.network} data</small></span><span className="bundle-price">{formatMoney(item.sellingPrice, item.currency)}</span><span className="radio-mark" />
-            </button>)}
-            <div className="step-actions"><button className="button button-quiet" type="button" onClick={goBack}>Back</button><button className="button button-ink" type="button" disabled={!plan} onClick={() => advance(2)}>Continue <ArrowRight size={17} /></button></div>
+            {bundles.map((item) => {
+              const meta = networkMeta[item.network] || { short: item.network.slice(0, 1).toUpperCase(), className: 'other' };
+              return <button className="bundle-option" type="button" key={item.id} onClick={() => { setPlan(item); advance(2); }}>
+                <span className={`bundle-network ${meta.className}`}>{item.network}</span>
+                <span className="bundle-gb">{item.bundleGb}<small>GB</small></span>
+                <span className="bundle-price">{formatMoney(item.sellingPrice, item.currency)}</span>
+                <span className="bundle-validity">{item.validity}</span>
+              </button>;
+            })}
+            <aside className="important-notice" aria-labelledby="important-notice-title">
+              <div className="important-notice-heading"><CircleAlert size={18} /><h2 id="important-notice-title">Important Notice</h2></div>
+              <p className="important-notice-intro">Read carefully before you order</p>
+              <h3>Must Read</h3>
+              <ul>
+                {noticeItems.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </aside>
           </div>}
 
           {step === 2 && <div className="checkout-form"><label htmlFor="recipient">Recipient phone number</label><div className={`input-wrap ${fieldError ? 'has-error' : ''}`}><span className="input-prefix">+233</span><input id="recipient" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="024 123 4567" maxLength={10} value={recipient} onChange={(event) => { setRecipient(event.target.value.replace(/\D/g, '').slice(0, 10)); setFieldError(''); }} /></div><small className="field-hint">10 digits, starting with 0. Double-check the recipient number.</small>{fieldError && <p className="field-error" role="alert">{fieldError}</p>}<div className="step-actions"><button className="button button-quiet" type="button" onClick={goBack}>Back</button><button className="button button-ink" type="button" onClick={validateRecipient}>Continue <ArrowRight size={17} /></button></div></div>}

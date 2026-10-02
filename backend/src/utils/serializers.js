@@ -1,9 +1,11 @@
+const { getPlanValidity } = require('./planValidity');
+
 function serializePlan(plan) {
   return {
     id: plan.id,
     network: plan.network,
     bundleGb: Number(plan.bundle_gb),
-    validity: plan.validity,
+    validity: getPlanValidity(plan.network, plan.validity),
     sellingPrice: Number(plan.selling_price),
     currency: plan.currency,
   };
@@ -21,7 +23,7 @@ function serializeOrder(order, plan) {
     reference: order.reference,
     network: plan.network,
     bundleGb: Number(plan.bundle_gb),
-    validity: plan.validity,
+    validity: getPlanValidity(plan.network, plan.validity),
     recipient: order.recipient,
     email: order.email,
     amount: Number(order.amount),
