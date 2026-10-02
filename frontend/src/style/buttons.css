@@ -1,0 +1,104 @@
+.icon-button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.icon-button:hover {
+  border-color: var(--teal);
+  transform: rotate(-8deg);
+}
+.theme-toggle {
+  color: var(--brand-secondary);
+}
+.theme-toggle:hover {
+  background: color-mix(in srgb, var(--brand-accent) 12%, var(--paper));
+  border-color: var(--brand-accent);
+}
+:root[data-theme="dark"] .theme-toggle {
+  color: var(--brand-accent);
+}
+.button {
+  min-height: 48px;
+  padding: 0 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.button-small {
+  min-height: 40px;
+  padding-inline: 15px;
+  font-size: 13px;
+}
+.button-ink {
+  background: var(--night);
+  color: #fff;
+}
+.button-ink:hover:not(:disabled) {
+  background: var(--teal);
+}
+.button-lime {
+  background: var(--lime);
+  color: var(--lime-ink);
+}
+.button-lime:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--brand-accent) 84%, #ffffff);
+}
+.button-quiet {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.button-quiet:hover:not(:disabled) {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.text-link:hover {
+  color: var(--cyan);
+}
+
+@media (max-width: 620px) {
+  .icon-button {
+    width: 37px;
+    height: 37px;
+  }
+  .button-small {
+    min-height: 37px;
+    padding-inline: 12px;
+    font-size: 11px;
+  }
+}
