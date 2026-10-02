@@ -29,7 +29,7 @@ export function TrackPage() {
     setError('');
     setOrder(null);
     try {
-      const result = await api.getOrder(value);
+      const result = await api.getOrderStatus(value);
       setOrder(result.order);
       const url = new URL(window.location.href);
       url.searchParams.set('ref', value);
