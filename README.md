@@ -46,8 +46,10 @@ secret key. It only ever calls **our own** backend.
 project-root/
   frontend/
     index.html, buy.html, track.html, success.html, failed.html — Vite entry pages
+    scripts/prerender.mjs — generates route-specific HTML after the Vite build
     src/
       App.jsx           — page selection, document titles, and theme state
+      entry-server.jsx  — React renderer used by the prerender build
       api.js            — typed-by-contract fetch wrapper for the backend API
       components/       — shared navigation and theme controls
       pages/            — home, checkout, tracking, and order result views
@@ -111,9 +113,12 @@ server proxies `/api` to `http://localhost:5000`, so run the backend as well.
 The root `npm run build` and `npm run preview` commands also forward to the frontend package.
 Set `VITE_API_BASE` in `frontend/.env.local` only if you need a different API
 base URL. For static hosting, run `npm run build` and publish `frontend/dist/`.
+React pages are prerendered during the build and hydrated in the browser for
+interactivity. The build keeps `.html` files for compatibility and callbacks,
+and also writes clean route directories such as `dist/buy/index.html`.
 The site uses clean routes (`/buy`, `/track`, `/success`, `/failed`, `/privacy`,
-and `/terms`). On Render, add these static-site rewrite rules in the Dashboard
-so direct visits and refreshes work:
+and `/terms`). On Render, use these static-site rewrite rules in the Dashboard
+to ensure direct visits and refreshes serve the prerendered pages:
 
 | Source | Destination | Action |
 | --- | --- | --- |

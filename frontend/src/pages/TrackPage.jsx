@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, CircleAlert, LoaderCircle, Search, ShieldCheck } from 'lucide-react';
 import { api } from '../api.js';
 import { formatMoney, formatPhone } from '../utils.js';
@@ -13,10 +13,14 @@ const statusCopy = {
 };
 
 export function TrackPage() {
-  const [reference, setReference] = useState(new URLSearchParams(window.location.search).get('ref') || '');
+  const [reference, setReference] = useState('');
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setReference(new URLSearchParams(window.location.search).get('ref') || '');
+  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();

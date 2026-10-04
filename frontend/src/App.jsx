@@ -16,15 +16,22 @@ function readTheme() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-export default function App() {
-  const [theme, setTheme] = useState(readTheme);
+export default function App({ initialPath } = {}) {
+  const [theme, setTheme] = useState('light');
+  const [themeInitialized, setThemeInitialized] = useState(false);
   const [showStartupLoader, setShowStartupLoader] = useState(true);
-  const path = normalizePath(window.location.pathname);
+  const pathname = initialPath ?? (typeof window === 'undefined' ? '/' : window.location.pathname);
+  const path = normalizePath(pathname);
   const isResultPage = path === '/success' || path === '/failed';
 
   useEffect(() => {
     const timer = window.setTimeout(() => setShowStartupLoader(false), 1400);
     return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    setTheme(readTheme());
+    setThemeInitialized(true);
   }, []);
 
   useEffect(() => {
@@ -35,10 +42,11 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    if (!themeInitialized) return;
     try {
       localStorage.setItem('datainn-theme', theme);
     } catch {}
-  }, [theme]);
+  }, [theme, themeInitialized]);
 
   useEffect(() => {
     const titles = {

@@ -5,14 +5,22 @@ import { SplashLoader } from '../components/SplashLoader.jsx';
 import { formatMoney, formatPhone } from '../utils.js';
 
 export function ResultPage({ kind }) {
-  const reference = new URLSearchParams(window.location.search).get('ref');
+  const [reference, setReference] = useState('');
   const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(Boolean(reference));
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    if (!reference) return undefined;
+    setReference(new URLSearchParams(window.location.search).get('ref') || '');
+  }, []);
+
+  useEffect(() => {
+    if (!reference) {
+      setLoading(false);
+      return undefined;
+    }
+    setLoading(true);
     let alive = true;
     let attempts = 0;
     let timer;
