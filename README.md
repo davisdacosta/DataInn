@@ -111,7 +111,8 @@ server proxies `/api` to `http://localhost:5000`, so run the backend as well.
 The root `npm run build` and `npm run preview` commands also forward to the frontend package.
 Set `VITE_API_BASE` in `frontend/.env.local` only if you need a different API
 base URL. For static hosting, run `npm run build` and publish `frontend/dist/`;
-the build keeps the existing `.html` page URLs for order callbacks.
+the build keeps the existing `.html` page URLs for order callbacks and includes
+the crawl files at `/robots.txt` and `/sitemap.xml`.
 
 ## 6. Run the backend
 
