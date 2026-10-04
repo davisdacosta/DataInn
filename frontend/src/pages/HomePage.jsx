@@ -58,7 +58,7 @@ export function HomePage() {
             <h1>Send data.<br /><span>Keep moving.</span></h1>
             <p className="hero-description">Choose a bundle for any Ghanaian number. Pay securely, and we’ll take care of delivery.</p>
             <div className="hero-actions">
-              <a className="button button-lime" href="/buy.html">Choose a bundle <ArrowRight size={17} /></a>
+              <a className="button button-lime" href="/buy">Choose a bundle <ArrowRight size={17} /></a>
               <a className="text-link" href="#how-it-works">See how it works <ArrowDown size={15} /></a>
             </div>
             <div className="trust-line"><ShieldCheck size={17} /><span>Secure checkout</span><i /><span>No account needed</span><i /><span>Automatic status updates</span></div>
@@ -95,9 +95,9 @@ export function HomePage() {
         </div>
         <div className="network-strip">
           {loadingCatalog && <CatalogSkeleton variant="home" />}
-          {!loadingCatalog && catalogError && <p className="catalog-message" role="alert">Bundle catalog is temporarily unavailable. <a href="/buy.html">Try checkout</a></p>}
+          {!loadingCatalog && catalogError && <p className="catalog-message" role="alert">Bundle catalog is temporarily unavailable. <a href="/buy">Try checkout</a></p>}
           {!loadingCatalog && !catalogError && networks.map((network, index) => (
-            <a className={`network-choice ${network.className}`} href="/buy.html" key={network.name}>
+            <a className={`network-choice ${network.className}`} href="/buy" key={network.name}>
               <span className="network-index">0{index + 1}</span>
               <span className={`network-symbol ${network.className}`}>{network.short}</span>
               <span className="network-copy"><strong>{network.name}</strong><small>{network.count} {network.count === 1 ? 'bundle' : 'bundles'} available</small></span>
@@ -110,7 +110,7 @@ export function HomePage() {
 
       <section className="how-section" id="how-it-works">
         <div className="page-width how-inner">
-          <div className="how-intro"><p className="eyebrow eyebrow-dark">Quick from start to sent</p><h2>Four small steps.<br /><span>One less thing to worry about.</span></h2><a className="button button-ink" href="/buy.html">Start an order <ArrowRight size={17} /></a></div>
+          <div className="how-intro"><p className="eyebrow eyebrow-dark">Quick from start to sent</p><h2>Four small steps.<br /><span>One less thing to worry about.</span></h2><a className="button button-ink" href="/buy">Start an order <ArrowRight size={17} /></a></div>
           <div className="how-list">
             <article><span>01</span><div><h3>Choose a bundle</h3><p>Pick a network and the size that fits.</p></div><Smartphone size={20} /></article>
             <article><span>02</span><div><h3>Add recipient details</h3><p>Enter the phone number and email for updates.</p></div><Check size={20} /></article>
@@ -135,7 +135,7 @@ export function HomePage() {
           <div className="faq-list">{faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
         </div>
       </section>
-      <section className="closing-band page-width"><p>Ready when you are.</p><a href="/buy.html">Find a bundle <ArrowRight size={17} /></a></section>
+      <section className="closing-band page-width"><p>Ready when you are.</p><a href="/buy">Find a bundle <ArrowRight size={17} /></a></section>
     </>
   );
 }

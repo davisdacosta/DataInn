@@ -110,9 +110,21 @@ Open the URL Vite prints (normally `http://localhost:5173`). The development
 server proxies `/api` to `http://localhost:5000`, so run the backend as well.
 The root `npm run build` and `npm run preview` commands also forward to the frontend package.
 Set `VITE_API_BASE` in `frontend/.env.local` only if you need a different API
-base URL. For static hosting, run `npm run build` and publish `frontend/dist/`;
-the build keeps the existing `.html` page URLs for order callbacks and includes
-the crawl files at `/robots.txt` and `/sitemap.xml`.
+base URL. For static hosting, run `npm run build` and publish `frontend/dist/`.
+The site uses clean routes (`/buy`, `/track`, `/success`, `/failed`, `/privacy`,
+and `/terms`). On Render, add these static-site rewrite rules in the Dashboard
+so direct visits and refreshes work:
+
+| Source | Destination | Action |
+| --- | --- | --- |
+| `/buy` | `/buy.html` | Rewrite |
+| `/track` | `/track.html` | Rewrite |
+| `/success` | `/success.html` | Rewrite |
+| `/failed` | `/failed.html` | Rewrite |
+| `/privacy` | `/privacy.html` | Rewrite |
+| `/terms` | `/terms.html` | Rewrite |
+
+The crawl files are published at `/robots.txt` and `/sitemap.xml`.
 
 ## 6. Run the backend
 

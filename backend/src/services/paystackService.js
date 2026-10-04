@@ -35,7 +35,7 @@ async function initializeTransaction({ email, amountGhs, reference, callbackUrl 
     mockTransactions.set(reference, { email, amountGhs, status: 'success' });
     logger.info('Mock Paystack transaction initialized', { reference, amountGhs });
     return {
-      authorization_url: `${config.frontendUrl}/success.html?ref=${reference}&mock=1`,
+      authorization_url: `${config.frontendUrl}/success?ref=${reference}&mock=1`,
       access_code: `mock_access_${reference}`,
       reference,
     };

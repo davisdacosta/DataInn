@@ -13,7 +13,7 @@ async function initializePayment(order) {
     throw new AppError(409, 'already_paid', 'This order has already been paid for.');
   }
 
-  const callbackUrl = `${config.frontendUrl}/success.html?ref=${order.reference}`;
+  const callbackUrl = `${config.frontendUrl}/success?ref=${order.reference}`;
   const paystackData = await paystackService.initializeTransaction({
     email: order.email,
     amountGhs: order.amount,

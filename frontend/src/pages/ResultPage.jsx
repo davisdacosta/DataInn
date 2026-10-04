@@ -108,7 +108,7 @@ export function ResultPage({ kind }) {
       <h1>{heading}</h1>
       <p className="result-message">{message}</p>
       {order && <div className="result-details"><div><span>Network</span><strong>{order.network}</strong></div><div><span>Bundle</span><strong>{order.bundleGb}GB</strong></div><div><span>Recipient</span><strong>{formatPhone(order.recipient)}</strong></div><div><span>Paid</span><strong>{formatMoney(order.amount, order.currency)}</strong></div><div><span>Reference</span><strong>{order.reference}</strong></div></div>}
-      <div className="result-actions"><a className="button button-lime" href="/buy.html">Buy another bundle <ArrowRight size={17} /></a>{reference && <button className="button button-quiet" type="button" onClick={() => { setLoading(true); setRetryCount((count) => count + 1); }}><RefreshCw size={16} /> Check status</button>}<a className="button button-quiet" href={reference ? `/track.html?ref=${encodeURIComponent(reference)}` : '/track.html'}>Track order</a></div>
+      <div className="result-actions"><a className="button button-lime" href="/buy">Buy another bundle <ArrowRight size={17} /></a>{reference && <button className="button button-quiet" type="button" onClick={() => { setLoading(true); setRetryCount((count) => count + 1); }}><RefreshCw size={16} /> Check status</button>}<a className="button button-quiet" href={reference ? `/track?ref=${encodeURIComponent(reference)}` : '/track'}>Track order</a></div>
     </section>
   );
 }

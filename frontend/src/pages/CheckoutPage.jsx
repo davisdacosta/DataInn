@@ -79,8 +79,8 @@ export function CheckoutPage() {
         if (result.order.terminal) {
           finished = true;
           window.location.assign(result.order.deliveryStatus === 'delivered'
-            ? `/success.html?ref=${encodeURIComponent(order.reference)}`
-            : `/failed.html?ref=${encodeURIComponent(order.reference)}&reason=delivery`);
+            ? `/success?ref=${encodeURIComponent(order.reference)}`
+            : `/failed?ref=${encodeURIComponent(order.reference)}&reason=delivery`);
         }
       } catch {
         setNotice('We are having trouble refreshing the status. We’ll keep trying.');
@@ -139,7 +139,7 @@ export function CheckoutPage() {
 
   function showPaymentResult(orderToCheck = order) {
     if (!orderToCheck) return;
-    window.location.assign(`/success.html?ref=${encodeURIComponent(orderToCheck.reference)}`);
+    window.location.assign(`/success?ref=${encodeURIComponent(orderToCheck.reference)}`);
   }
 
   async function startPayment() {
@@ -250,7 +250,7 @@ export function CheckoutPage() {
 
           {step === 5 && <div className="payment-state"><LoaderCircle className="spin payment-spinner" size={38} /><h2>{paymentMessage}</h2><p>Please keep this page open while we confirm the order.</p>{error && <div className="form-alert" role="alert">{error}<button className="text-button" type="button" onClick={() => advance(4)}>Return to review</button></div>}</div>}
 
-          {step === 6 && <div className="payment-state delivery-state"><span className="delivery-check"><Check size={25} /></span><p className="eyebrow eyebrow-dark">Payment successful</p><h2>Sending {plan?.bundleGb}GB {plan?.network}</h2><p>To <strong>{formatPhone(recipient)}</strong></p><div className="delivery-status"><span className="status-pulse" /> Status: {order?.deliveryStatus || 'Processing'}</div>{notice && <div className="form-alert notice-alert" role="status">{notice} <a href="/track.html">Track this order <ChevronRight size={14} /></a></div>}<small>Your order reference: {order?.reference}</small></div>}
+          {step === 6 && <div className="payment-state delivery-state"><span className="delivery-check"><Check size={25} /></span><p className="eyebrow eyebrow-dark">Payment successful</p><h2>Sending {plan?.bundleGb}GB {plan?.network}</h2><p>To <strong>{formatPhone(recipient)}</strong></p><div className="delivery-status"><span className="status-pulse" /> Status: {order?.deliveryStatus || 'Processing'}</div>{notice && <div className="form-alert notice-alert" role="status">{notice} <a href="/track">Track this order <ChevronRight size={14} /></a></div>}<small>Your order reference: {order?.reference}</small></div>}
 
           {confirmOpen && <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setConfirmOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title"><span className="modal-icon"><Smartphone size={21} /></span><h2 id="confirm-title">Confirm your order</h2><p>{formatMoney(plan?.sellingPrice, plan?.currency)} will send {plan?.bundleGb}GB {plan?.network} data to {formatPhone(recipient)}.</p><div className="modal-actions"><button className="button button-quiet" type="button" onClick={() => setConfirmOpen(false)}>Review details</button><button className="button button-ink" type="button" disabled={busy} onClick={startPayment}>Confirm & pay</button></div></section></div>}
         </div>

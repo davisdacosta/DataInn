@@ -28,6 +28,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (window.location.pathname !== path) {
+      window.history.replaceState(null, '', `${path}${window.location.search}${window.location.hash}`);
+    }
+  }, [path]);
+
+  useEffect(() => {
     document.documentElement.dataset.theme = theme;
     try {
       localStorage.setItem('datainn-theme', theme);

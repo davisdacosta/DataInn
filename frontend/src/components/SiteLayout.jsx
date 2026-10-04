@@ -8,8 +8,8 @@ const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029Vb82YJkId7nW9pP60
 
 const links = [
   { href: '/', path: '/', label: 'Home', Icon: House },
-  { href: '/buy.html', path: '/buy', label: 'Buy data', Icon: Smartphone },
-  { href: '/track.html', path: '/track', label: 'Track', Icon: Search },
+  { href: '/buy', path: '/buy', label: 'Buy data', Icon: Smartphone },
+  { href: '/track', path: '/track', label: 'Track', Icon: Search },
 ];
 
 export function SiteLayout({ children, theme, onToggleTheme, active = '/' }) {
@@ -23,13 +23,13 @@ export function SiteLayout({ children, theme, onToggleTheme, active = '/' }) {
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
             <a className={active === '/' ? 'active' : ''} href="/">Home</a>
-            <a className={active === '/buy' ? 'active' : ''} href="/buy.html">Networks</a>
+            <a className={active === '/buy' ? 'active' : ''} href="/buy">Networks</a>
             <a href="/#how-it-works">How it works</a>
-            <a className={active === '/track' ? 'active' : ''} href="/track.html">Track order</a>
+            <a className={active === '/track' ? 'active' : ''} href="/track">Track order</a>
           </nav>
           <div className="header-actions">
             <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-            <a className="button button-small button-ink" href="/buy.html">Buy data <ArrowUpRight size={16} /></a>
+            <a className="button button-small button-ink" href="/buy">Buy data <ArrowUpRight size={16} /></a>
           </div>
         </div>
       </header>
@@ -44,8 +44,8 @@ export function SiteLayout({ children, theme, onToggleTheme, active = '/' }) {
           </a>
           <p>More data. Less waiting.</p>
           <a href={SUPPORT_URL} target="_blank" rel="noreferrer"><CircleHelp size={16} /> Help centre</a>
-          <a href="/privacy.html">Privacy Policy</a>
-          <a href="/terms.html">Terms of Service</a>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
           <small>© 2026 DataInn · Payments secured by Paystack</small>
         </div>
       </footer>
