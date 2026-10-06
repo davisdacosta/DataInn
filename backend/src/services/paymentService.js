@@ -7,16 +7,30 @@ const logger = require('../utils/logger');
 const { config } = require('../config/env');
 const { AppError } = require('../utils/errors');
 
+const PAYSTACK_FEE_PERCENT = 4;
+
+function getPaymentAmounts(amount) {
+  const baseAmountSubunit = paystackService.toSubunit(amount);
+  const feeSubunit = Math.round(baseAmountSubunit * PAYSTACK_FEE_PERCENT / 100);
+  return {
+    baseAmountSubunit,
+    feeSubunit,
+    amountSubunit: baseAmountSubunit + feeSubunit,
+  };
+}
+
 /** Start a Paystack transaction for an already-created order. */
 async function initializePayment(order) {
   if (order.payment_status === 'success') {
     throw new AppError(409, 'already_paid', 'This order has already been paid for.');
   }
 
+  const paymentAmounts = getPaymentAmounts(order.amount);
+  const amountGhs = paymentAmounts.amountSubunit / 100;
   const callbackUrl = `${config.frontendUrl}/success?ref=${order.reference}`;
   const paystackData = await paystackService.initializeTransaction({
     email: order.email,
-    amountGhs: order.amount,
+    amountGhs,
     reference: order.reference,
     callbackUrl,
   });
@@ -24,7 +38,7 @@ async function initializePayment(order) {
   await paymentsRepository.create({
     orderId: order.id,
     paystackReference: order.reference,
-    amount: order.amount,
+    amount: amountGhs,
     currency: order.currency,
   });
 
@@ -33,6 +47,7 @@ async function initializePayment(order) {
     accessCode: paystackData.access_code,
     reference: order.reference,
     publicKey: config.paystack.publicKey,
+    ...paymentAmounts,
   };
 }
 
@@ -58,7 +73,7 @@ async function verifyAndFulfil(order) {
     return ordersRepository.findByReference(order.reference);
   }
 
-  const expectedSubunit = paystackService.toSubunit(order.amount);
+  const expectedSubunit = getPaymentAmounts(order.amount).amountSubunit;
   if (transaction.amount !== expectedSubunit) {
     logger.error('Paystack amount mismatch — refusing to fulfil', {
       reference: order.reference,

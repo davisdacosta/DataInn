@@ -5,6 +5,7 @@ import { CatalogSkeleton } from '../components/CatalogSkeleton.jsx';
 import { formatMoney, formatPhone } from '../utils.js';
 
 const steps = ['Network', 'Bundle', 'Recipient', 'Email', 'Review', 'Payment', 'Delivery'];
+const PAYSTACK_FEE_PERCENT = 4;
 const networkMeta = {
   MTN: { short: 'M', className: 'mtn' },
   Telecel: { short: 'T', className: 'telecel' },
@@ -21,6 +22,17 @@ const mtnVerificationNotice = 'MTN first-time order: if this number has never re
 
 function stepName(step) {
   return ['Choose network', 'Choose bundle', 'Recipient number', 'Your email', 'Review order', 'Secure payment', 'Delivery status'][step];
+}
+
+function getPaymentAmounts(amount) {
+  const baseAmountSubunit = Math.round((Number(amount) || 0) * 100);
+  const feeSubunit = Math.round(baseAmountSubunit * PAYSTACK_FEE_PERCENT / 100);
+  return {
+    baseAmount: baseAmountSubunit / 100,
+    feeAmount: feeSubunit / 100,
+    amountSubunit: baseAmountSubunit + feeSubunit,
+    totalAmount: (baseAmountSubunit + feeSubunit) / 100,
+  };
 }
 
 export function CheckoutPage() {
@@ -58,6 +70,7 @@ export function CheckoutPage() {
   const bundles = useMemo(() => plans
     .filter((item) => item.network === network)
     .sort((a, b) => a.bundleGb - b.bundleGb), [network, plans]);
+  const paymentAmounts = useMemo(() => getPaymentAmounts(plan?.sellingPrice), [plan]);
   const noticeItems = network === 'MTN'
     ? [...commonNoticeItems, mtnVerificationNotice]
     : commonNoticeItems;
@@ -174,7 +187,7 @@ export function CheckoutPage() {
       const handler = window.PaystackPop.setup({
         key: payment.publicKey,
         email: email.trim(),
-        amount: Math.round(plan.sellingPrice * 100),
+        amount: payment.amountSubunit,
         currency: plan.currency,
         ref: payment.reference,
         onClose: openResultOnce,
@@ -246,18 +259,18 @@ export function CheckoutPage() {
 
           {step === 3 && <div className="checkout-form"><label htmlFor="email">Email address</label><input className={fieldError ? 'has-error' : ''} id="email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(event) => { setEmail(event.target.value); setFieldError(''); }} />{fieldError && <p className="field-error" role="alert">{fieldError}</p>}<small className="field-hint">We’ll send your receipt and order updates here.</small><div className="step-actions"><button className="button button-quiet" type="button" onClick={goBack}>Back</button><button className="button button-ink" type="button" onClick={validateEmail}>Review order <ArrowRight size={17} /></button></div></div>}
 
-          {step === 4 && <div className="review-panel"><div className="review-rows"><div><span>Network</span><strong>{plan?.network}</strong></div><div><span>Bundle</span><strong>{plan?.bundleGb}GB</strong></div><div><span>Validity</span><strong>{plan?.validity}</strong></div><div><span>Recipient</span><strong>{formatPhone(recipient)}</strong></div><div><span>Email</span><strong className="review-email">{email}</strong></div></div><div className="review-total"><span>Total to pay</span><strong>{formatMoney(plan?.sellingPrice, plan?.currency)}</strong></div>{error && <div className="form-alert" role="alert"><CircleAlert size={18} />{error}</div>}<div className="step-actions"><button className="button button-quiet" type="button" onClick={goBack}>Back</button><button className="button button-lime" type="button" disabled={busy} onClick={() => setConfirmOpen(true)}>Continue to payment <ArrowRight size={17} /></button></div><p className="secure-note"><LockKeyhole size={13} /> You’ll confirm the charge before Paystack opens.</p></div>}
+          {step === 4 && <div className="review-panel"><div className="review-rows"><div><span>Network</span><strong>{plan?.network}</strong></div><div><span>Bundle</span><strong>{plan?.bundleGb}GB</strong></div><div><span>Validity</span><strong>{plan?.validity}</strong></div><div><span>Recipient</span><strong>{formatPhone(recipient)}</strong></div><div><span>Email</span><strong className="review-email">{email}</strong></div></div><div className="review-costs"><div><span>Bundle price</span><strong>{formatMoney(paymentAmounts.baseAmount, plan?.currency)}</strong></div><div><span>Paystack fee (4%)</span><strong>{formatMoney(paymentAmounts.feeAmount, plan?.currency)}</strong></div></div><div className="review-total"><span>Total to pay</span><strong>{formatMoney(paymentAmounts.totalAmount, plan?.currency)}</strong></div>{error && <div className="form-alert" role="alert"><CircleAlert size={18} />{error}</div>}<div className="step-actions"><button className="button button-quiet" type="button" onClick={goBack}>Back</button><button className="button button-lime" type="button" disabled={busy} onClick={() => setConfirmOpen(true)}>Continue to payment <ArrowRight size={17} /></button></div><p className="secure-note"><LockKeyhole size={13} /> You’ll confirm the charge before Paystack opens.</p></div>}
 
           {step === 5 && <div className="payment-state"><LoaderCircle className="spin payment-spinner" size={38} /><h2>{paymentMessage}</h2><p>Please keep this page open while we confirm the order.</p>{error && <div className="form-alert" role="alert">{error}<button className="text-button" type="button" onClick={() => advance(4)}>Return to review</button></div>}</div>}
 
           {step === 6 && <div className="payment-state delivery-state"><span className="delivery-check"><Check size={25} /></span><p className="eyebrow eyebrow-dark">Payment successful</p><h2>Sending {plan?.bundleGb}GB {plan?.network}</h2><p>To <strong>{formatPhone(recipient)}</strong></p><div className="delivery-status"><span className="status-pulse" /> Status: {order?.deliveryStatus || 'Processing'}</div>{notice && <div className="form-alert notice-alert" role="status">{notice} <a href="/track">Track this order <ChevronRight size={14} /></a></div>}<small>Your order reference: {order?.reference}</small></div>}
 
-          {confirmOpen && <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setConfirmOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title"><span className="modal-icon"><Smartphone size={21} /></span><h2 id="confirm-title">Confirm your order</h2><p>{formatMoney(plan?.sellingPrice, plan?.currency)} will send {plan?.bundleGb}GB {plan?.network} data to {formatPhone(recipient)}.</p><div className="modal-actions"><button className="button button-quiet" type="button" onClick={() => setConfirmOpen(false)}>Review details</button><button className="button button-ink" type="button" disabled={busy} onClick={startPayment}>Confirm & pay</button></div></section></div>}
+          {confirmOpen && <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setConfirmOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title"><span className="modal-icon"><Smartphone size={21} /></span><h2 id="confirm-title">Confirm your order</h2><p>{formatMoney(paymentAmounts.totalAmount, plan?.currency)} will send {plan?.bundleGb}GB {plan?.network} data to {formatPhone(recipient)}.</p><div className="confirm-costs"><div><span>Bundle price</span><strong>{formatMoney(paymentAmounts.baseAmount, plan?.currency)}</strong></div><div><span>Paystack fee (4%)</span><strong>{formatMoney(paymentAmounts.feeAmount, plan?.currency)}</strong></div></div><aside className="important-notice confirm-notice" aria-labelledby="confirm-notice-title"><div className="important-notice-heading"><CircleAlert size={18} /><h3 id="confirm-notice-title">Important Notice</h3></div><p><strong>Delivery times may vary.</strong> Phone must not owe airtime. No refunds for wrong numbers.{network === 'MTN' && <> <strong>MTN:</strong> a number ordering MTN data through us for the first time may show “Awaiting Verification” for a one-time check before it delivers — normally up to a week, sometimes a couple of weeks (future orders to that same number go through normally).</>}</p></aside><div className="modal-actions"><button className="button button-quiet" type="button" onClick={() => setConfirmOpen(false)}>Review details</button><button className="button button-ink" type="button" disabled={busy} onClick={startPayment}>Confirm & pay {formatMoney(paymentAmounts.totalAmount, plan?.currency)}</button></div></section></div>}
         </div>
 
         <aside className="checkout-aside">
           <div className="aside-heading"><span className="aside-icon"><Smartphone size={17} /></span><span>ORDER SUMMARY</span></div>
-          {plan ? <><div className="aside-bundle"><span className={`network-symbol ${networkMeta[plan.network]?.className || 'other'}`}>{networkMeta[plan.network]?.short || plan.network.slice(0, 1)}</span><div><strong>{plan.bundleGb}GB {plan.network}</strong><small>{plan.validity}</small></div></div><div className="aside-rule" /><div className="aside-total"><span>Total</span><strong>{formatMoney(plan.sellingPrice, plan.currency)}</strong></div></> : <div className="aside-empty"><Wifi size={19} /><p>Your bundle details will appear here as you choose.</p></div>}
+          {plan ? <><div className="aside-bundle"><span className={`network-symbol ${networkMeta[plan.network]?.className || 'other'}`}>{networkMeta[plan.network]?.short || plan.network.slice(0, 1)}</span><div><strong>{plan.bundleGb}GB {plan.network}</strong><small>{plan.validity}</small></div></div><div className="aside-rule" /><div className="aside-costs"><div><span>Bundle price</span><strong>{formatMoney(paymentAmounts.baseAmount, plan.currency)}</strong></div><div><span>Paystack fee (4%)</span><strong>{formatMoney(paymentAmounts.feeAmount, plan.currency)}</strong></div></div><div className="aside-total"><span>Total</span><strong>{formatMoney(paymentAmounts.totalAmount, plan.currency)}</strong></div></> : <div className="aside-empty"><Wifi size={19} /><p>Your bundle details will appear here as you choose.</p></div>}
           <div className="aside-guarantees"><p><Check size={14} /> Clear price before payment</p><p><Check size={14} /> Secure Paystack checkout</p><p><Check size={14} /> Order status tracking</p></div>
         </aside>
       </div>

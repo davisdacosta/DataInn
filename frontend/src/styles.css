@@ -1210,6 +1210,36 @@ summary:focus-visible {
   align-items: center;
   justify-content: space-between;
 }
+.review-costs,
+.confirm-costs,
+.aside-costs {
+  display: grid;
+  gap: 9px;
+}
+.review-costs {
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+.review-costs > div,
+.confirm-costs > div,
+.aside-costs > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.review-costs span,
+.confirm-costs span,
+.aside-costs span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.review-costs strong,
+.confirm-costs strong,
+.aside-costs strong {
+  font-size: 11px;
+}
 .review-total span {
   color: var(--muted);
   font-size: 12px;
@@ -1287,10 +1317,15 @@ summary:focus-visible {
   border-top: 1px solid var(--line);
 }
 .aside-total {
-  padding-top: 14px;
+  margin-top: 13px;
+  padding-top: 13px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-top: 1px solid var(--line);
+}
+.aside-costs {
+  padding-top: 13px;
 }
 .aside-total span {
   color: var(--muted);
@@ -1583,7 +1618,7 @@ summary:focus-visible {
   backdrop-filter: blur(5px);
 }
 .confirm-modal {
-  width: min(420px, 100%);
+  width: min(520px, 100%);
   padding: 25px;
   background: var(--paper);
   border: 1px solid var(--line);
@@ -1607,6 +1642,24 @@ summary:focus-visible {
   margin-bottom: 22px;
   color: var(--muted);
   font-size: 13px;
+}
+.confirm-costs {
+  margin: -8px 0 18px;
+  padding: 13px 0;
+  border-block: 1px solid var(--line);
+}
+.confirm-notice {
+  margin: 0 0 18px;
+  padding: 13px 15px;
+}
+.confirm-notice .important-notice-heading h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.confirm-notice p {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
 }
 .modal-actions {
   display: flex;
