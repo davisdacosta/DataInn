@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowDown, ArrowRight, Check, CircleHelp, CreditCard, RefreshCw, ShieldCheck, Smartphone, Zap } from 'lucide-react';
 import { api } from '../api.js';
 import { CatalogSkeleton } from '../components/CatalogSkeleton.jsx';
+import { DEFAULT_STOREFRONT_SETTINGS, NETWORK_NAMES } from '../storefrontSettings.js';
 
 const networkMeta = {
   MTN: { short: 'M', className: 'mtn' },
@@ -19,14 +20,16 @@ const faq = [
 
 export function HomePage() {
   const [plans, setPlans] = useState([]);
+  const [storefrontSettings, setStorefrontSettings] = useState(DEFAULT_STOREFRONT_SETTINGS);
   const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [catalogError, setCatalogError] = useState('');
 
   useEffect(() => {
     let active = true;
-    api.getPlans()
-      .then(({ plans: catalogPlans }) => {
+    Promise.all([api.getPlans(), api.getStorefrontSettings()])
+      .then(([{ plans: catalogPlans }, { settings }]) => {
         if (active) setPlans(catalogPlans || []);
+        if (active) setStorefrontSettings(settings);
       })
       .catch((error) => {
         if (active) setCatalogError(error.message);
@@ -42,11 +45,19 @@ export function HomePage() {
     counts.set(plan.network, (counts.get(plan.network) || 0) + 1);
     return counts;
   }, new Map());
-  const networks = [...networkCounts].map(([name, count]) => ({
-    name,
-    count,
-    ...networkMeta[name] || { short: name.slice(0, 1).toUpperCase(), className: 'other' },
-  }));
+  const networkNames = [...new Set([...NETWORK_NAMES, ...networkCounts.keys()])];
+  const networks = networkNames.map((name) => {
+    const count = networkCounts.get(name) || 0;
+    const enabled = storefrontSettings.networks[name] !== false;
+    return {
+      name,
+      count,
+      available: enabled && count > 0,
+      availabilityMessage: enabled ? 'No bundles available right now' : 'Temporarily unavailable',
+      availabilityLabel: enabled ? 'NO BUNDLES' : 'OFFLINE',
+      ...networkMeta[name] || { short: name.slice(0, 1).toUpperCase(), className: 'other' },
+    };
+  });
   const featuredPlan = plans[0];
 
   return (
@@ -97,12 +108,17 @@ export function HomePage() {
           {loadingCatalog && <CatalogSkeleton variant="home" />}
           {!loadingCatalog && catalogError && <p className="catalog-message" role="alert">Bundle catalog is temporarily unavailable. <a href="/buy">Try checkout</a></p>}
           {!loadingCatalog && !catalogError && networks.map((network, index) => (
-            <a className={`network-choice ${network.className}`} href="/buy" key={network.name}>
+            network.available ? <a className={`network-choice ${network.className}`} href="/buy" key={network.name}>
               <span className="network-index">0{index + 1}</span>
               <span className={`network-symbol ${network.className}`}>{network.short}</span>
               <span className="network-copy"><strong>{network.name}</strong><small>{network.count} {network.count === 1 ? 'bundle' : 'bundles'} available</small></span>
               <ArrowRight className="network-arrow" size={19} />
-            </a>
+            </a> : <div className={`network-choice network-offline ${network.className}`} key={network.name} aria-label={`${network.name} temporarily unavailable`}>
+              <span className="network-index">0{index + 1}</span>
+              <span className={`network-symbol ${network.className}`}>{network.short}</span>
+              <span className="network-copy"><strong>{network.name}</strong><small>{network.availabilityMessage}</small></span>
+              <span className="network-offline-tag">{network.availabilityLabel}</span>
+            </div>
           ))}
           {!loadingCatalog && !catalogError && networks.length === 0 && <p className="catalog-message">Bundles aren’t available right now. Please check back shortly.</p>}
         </div>

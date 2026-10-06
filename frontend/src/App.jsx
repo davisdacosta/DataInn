@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { SiteLayout } from './components/SiteLayout.jsx';
 import { SplashLoader } from './components/SplashLoader.jsx';
 import { CheckoutPage } from './pages/CheckoutPage.jsx';
+import { AdminPage } from './pages/AdminPage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { LegalPage } from './pages/LegalPage.jsx';
 import { ResultPage } from './pages/ResultPage.jsx';
@@ -23,6 +24,7 @@ export default function App({ initialPath } = {}) {
   const pathname = initialPath ?? (typeof window === 'undefined' ? '/' : window.location.pathname);
   const path = normalizePath(pathname);
   const isResultPage = path === '/success' || path === '/failed';
+  const isAdminPage = path === '/admin';
 
   useEffect(() => {
     const timer = window.setTimeout(() => setShowStartupLoader(false), 1400);
@@ -57,9 +59,12 @@ export default function App({ initialPath } = {}) {
       '/failed': 'Order status | DataInn',
       '/privacy': 'Privacy Policy | DataInn',
       '/terms': 'Terms of Service | DataInn',
+      '/admin': 'Storefront dashboard | DataInn',
     };
     document.title = titles[path] || 'DataInn | Data bundles in Ghana';
   }, [path]);
+
+  if (isAdminPage) return <AdminPage />;
 
   let active = path;
   let page;
@@ -82,7 +87,7 @@ export default function App({ initialPath } = {}) {
       >
         {page}
       </SiteLayout>
-      {showStartupLoader && !isResultPage && <SplashLoader />}
+      {showStartupLoader && !isResultPage && !isAdminPage && <SplashLoader />}
     </>
   );
 }

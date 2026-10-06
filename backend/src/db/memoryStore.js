@@ -12,6 +12,7 @@ const tables = {
   payments: new Map(),
   deliveries: new Map(),
   webhook_events: new Map(),
+  site_settings: new Map(),
 };
 
 function uuid() {

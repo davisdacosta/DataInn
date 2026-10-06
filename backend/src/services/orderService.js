@@ -3,6 +3,7 @@ const ordersRepository = require('../db/ordersRepository');
 const deliveriesRepository = require('../db/deliveriesRepository');
 const { AppError } = require('../utils/errors');
 const { isValidGhPhone, isValidEmail, generateOrderReference } = require('../utils/helpers');
+const siteSettingsService = require('./siteSettingsService');
 
 /**
  * Create a pending order. The amount charged is ALWAYS the plan's
@@ -16,6 +17,9 @@ async function createOrder({ planId, recipient, email }) {
 
   const plan = await plansRepository.findById(planId);
   if (!plan || !plan.active) throw new AppError(404, 'plan_unavailable', 'This bundle is no longer available. Please choose another.');
+  if (!(await siteSettingsService.isNetworkEnabled(plan.network))) {
+    throw new AppError(409, 'network_unavailable', `${plan.network} data is temporarily unavailable. Please choose another network.`);
+  }
 
   const order = await ordersRepository.create({
     reference: generateOrderReference(),

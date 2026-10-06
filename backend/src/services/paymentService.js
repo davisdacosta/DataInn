@@ -6,6 +6,7 @@ const plansRepository = require('../db/plansRepository');
 const logger = require('../utils/logger');
 const { config } = require('../config/env');
 const { AppError } = require('../utils/errors');
+const siteSettingsService = require('./siteSettingsService');
 
 const PAYSTACK_FEE_PERCENT = 4;
 
@@ -23,6 +24,10 @@ function getPaymentAmounts(amount) {
 async function initializePayment(order) {
   if (order.payment_status === 'success') {
     throw new AppError(409, 'already_paid', 'This order has already been paid for.');
+  }
+  const plan = await plansRepository.findById(order.plan_id);
+  if (plan && !(await siteSettingsService.isNetworkEnabled(plan.network))) {
+    throw new AppError(409, 'network_unavailable', `${plan.network} data is temporarily unavailable. Please choose another network.`);
   }
 
   const paymentAmounts = getPaymentAmounts(order.amount);

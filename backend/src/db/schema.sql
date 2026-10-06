@@ -26,6 +26,34 @@ CREATE INDEX IF NOT EXISTS idx_plans_active ON plans (active);
 CREATE INDEX IF NOT EXISTS idx_plans_network ON plans (network);
 
 -- ============================================================
+-- site_settings — persistent storefront availability and notices.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS site_settings (
+  key        TEXT PRIMARY KEY,
+  value      JSONB NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+INSERT INTO site_settings (key, value)
+VALUES (
+  'storefront',
+  '{
+    "networks": {"MTN": true, "Telecel": true, "AirtelTigo": false},
+    "mtnSpeed": {
+      "rating": "within_6_hours",
+      "message": "Expected within 6 hours — many orders arrive much sooner"
+    },
+    "notices": {
+      "delivery": "Delivery times may vary.",
+      "airtime": "Phone must not owe airtime.",
+      "wrongNumber": "No refunds for wrong numbers.",
+      "mtnVerification": "A number ordering MTN data through us for the first time may show “Awaiting Verification” for a one-time check before it delivers — normally up to a week, sometimes a couple of weeks (future orders to that same number go through normally)."
+    }
+  }'::jsonb
+)
+ON CONFLICT (key) DO NOTHING;
+
+-- ============================================================
 -- orders — one row per customer purchase attempt.
 -- payment_status and delivery_status are deliberately independent
 -- state machines (payment can succeed while delivery is still

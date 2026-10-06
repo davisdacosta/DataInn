@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Check, ChevronRight, CircleAlert, LoaderCircle, 
 import { api } from '../api.js';
 import { CatalogSkeleton } from '../components/CatalogSkeleton.jsx';
 import { formatMoney, formatPhone } from '../utils.js';
+import { DEFAULT_STOREFRONT_SETTINGS, NETWORK_NAMES, SPEED_RATINGS } from '../storefrontSettings.js';
 
 const steps = ['Network', 'Bundle', 'Recipient', 'Email', 'Review', 'Payment', 'Delivery'];
 const PAYSTACK_FEE_PERCENT = 4;
@@ -11,14 +12,10 @@ const networkMeta = {
   Telecel: { short: 'T', className: 'telecel' },
   AirtelTigo: { short: 'A', className: 'airteltigo' },
 };
-const commonNoticeItems = [
-  'Delivery times may vary based on network conditions and order volume.',
-  'Phone number must not owe airtime.',
+const staticNoticeItems = [
   'This service does not work on Turbonet SIM cards.',
   'Do not place another order for the same number until the current order is completed.',
-  'No refunds for wrong numbers. Double-check the number before you pay.',
 ];
-const mtnVerificationNotice = 'MTN first-time order: if this number has never received MTN data through us before, the network may put the order into “Awaiting Verification” to verify the number — a one-time step that normally takes up to a week, and in some cases a couple of weeks. It still delivers automatically, and every future order to that same number goes straight through the normal process. It’s not a failed order.';
 
 function stepName(step) {
   return ['Choose network', 'Choose bundle', 'Recipient number', 'Your email', 'Review order', 'Secure payment', 'Delivery status'][step];
@@ -37,6 +34,7 @@ function getPaymentAmounts(amount) {
 
 export function CheckoutPage() {
   const [plans, setPlans] = useState([]);
+  const [storefrontSettings, setStorefrontSettings] = useState(DEFAULT_STOREFRONT_SETTINGS);
   const [paymentConfig, setPaymentConfig] = useState(null);
   const [step, setStep] = useState(0);
   const [network, setNetwork] = useState('');
@@ -55,25 +53,33 @@ export function CheckoutPage() {
 
   useEffect(() => {
     let alive = true;
-    Promise.all([api.getPlans(), api.getPaymentConfig()])
-      .then(([planResult, config]) => {
+    Promise.all([api.getPlans(), api.getPaymentConfig(), api.getStorefrontSettings()])
+      .then(([planResult, config, storefrontResult]) => {
         if (!alive) return;
         setPlans(planResult.plans || []);
         setPaymentConfig(config);
+        setStorefrontSettings(storefrontResult.settings);
       })
       .catch((err) => alive && setError(err.message))
       .finally(() => alive && setLoading(false));
     return () => { alive = false; };
   }, []);
 
-  const networks = useMemo(() => [...new Set(plans.map((item) => item.network))], [plans]);
+  const networks = useMemo(() => [...new Set([
+    ...NETWORK_NAMES,
+    ...plans.map((item) => item.network),
+  ])], [plans]);
   const bundles = useMemo(() => plans
     .filter((item) => item.network === network)
     .sort((a, b) => a.bundleGb - b.bundleGb), [network, plans]);
   const paymentAmounts = useMemo(() => getPaymentAmounts(plan?.sellingPrice), [plan]);
-  const noticeItems = network === 'MTN'
-    ? [...commonNoticeItems, mtnVerificationNotice]
-    : commonNoticeItems;
+  const noticeItems = [
+    storefrontSettings.notices.delivery,
+    storefrontSettings.notices.airtime,
+    ...staticNoticeItems,
+    `${storefrontSettings.notices.wrongNumber} Double-check the number before you pay.`,
+    ...(network === 'MTN' ? [storefrontSettings.notices.mtnVerification] : []),
+  ];
 
   useEffect(() => {
     if (step !== 6 || !order?.reference) return undefined;
@@ -228,14 +234,17 @@ export function CheckoutPage() {
           {!loading && !error && step === 0 && plans.length > 0 && <div className="network-options">
             {networks.map((name) => {
               const meta = networkMeta[name] || { short: name.slice(0, 1).toUpperCase(), className: 'other' };
-              return <button className={`network-option ${meta.className} ${network === name ? 'selected' : ''}`} key={name} type="button" onClick={() => { setNetwork(name); setPlan(null); advance(1); }} aria-pressed={network === name}>
-                <span className="network-option-copy"><strong>{name}</strong><small>{plans.filter((item) => item.network === name).length} bundles</small></span>
+              const networkBundles = plans.filter((item) => item.network === name).length;
+              const enabled = storefrontSettings.networks[name] !== false && networkBundles > 0;
+              return <button className={`network-option ${meta.className} ${network === name ? 'selected' : ''} ${!enabled ? 'network-option-offline' : ''}`} key={name} type="button" disabled={!enabled} onClick={() => { setNetwork(name); setPlan(null); advance(1); }} aria-pressed={network === name}>
+                <span className="network-option-copy"><strong>{name}</strong><small>{enabled ? `${networkBundles} bundles` : storefrontSettings.networks[name] === false ? 'Temporarily unavailable' : 'No bundles available'}</small></span>
               </button>;
             })}
           </div>}
 
           {!loading && !error && step === 1 && <div className="bundle-options">
             <button className="inline-back" type="button" onClick={goBack}><ArrowLeft size={15} /> Change network</button>
+            {network === 'MTN' && <aside className={`speed-rating ${SPEED_RATINGS[storefrontSettings.mtnSpeed.rating]?.className || SPEED_RATINGS.within_6_hours.className}`} aria-live="polite"><span className="speed-rating-label">MTN delivery estimate</span><strong>{SPEED_RATINGS[storefrontSettings.mtnSpeed.rating]?.label || SPEED_RATINGS.within_6_hours.label}</strong><p>{storefrontSettings.mtnSpeed.message}</p></aside>}
             {bundles.map((item) => {
               const meta = networkMeta[item.network] || { short: item.network.slice(0, 1).toUpperCase(), className: 'other' };
               return <button className="bundle-option" type="button" key={item.id} onClick={() => { setPlan(item); advance(2); }}>
@@ -265,7 +274,7 @@ export function CheckoutPage() {
 
           {step === 6 && <div className="payment-state delivery-state"><span className="delivery-check"><Check size={25} /></span><p className="eyebrow eyebrow-dark">Payment successful</p><h2>Sending {plan?.bundleGb}GB {plan?.network}</h2><p>To <strong>{formatPhone(recipient)}</strong></p><div className="delivery-status"><span className="status-pulse" /> Status: {order?.deliveryStatus || 'Processing'}</div>{notice && <div className="form-alert notice-alert" role="status">{notice} <a href="/track">Track this order <ChevronRight size={14} /></a></div>}<small>Your order reference: {order?.reference}</small></div>}
 
-          {confirmOpen && <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setConfirmOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title"><span className="modal-icon"><Smartphone size={21} /></span><h2 id="confirm-title">Confirm your order</h2><p>{formatMoney(paymentAmounts.totalAmount, plan?.currency)} will send {plan?.bundleGb}GB {plan?.network} data to {formatPhone(recipient)}.</p><div className="confirm-costs"><div><span>Bundle price</span><strong>{formatMoney(paymentAmounts.baseAmount, plan?.currency)}</strong></div><div><span>Paystack fee (4%)</span><strong>{formatMoney(paymentAmounts.feeAmount, plan?.currency)}</strong></div></div><aside className="important-notice confirm-notice" aria-labelledby="confirm-notice-title"><div className="important-notice-heading"><CircleAlert size={18} /><h3 id="confirm-notice-title">Important Notice</h3></div><p><strong>Delivery times may vary.</strong> Phone must not owe airtime. No refunds for wrong numbers.{network === 'MTN' && <> <strong>MTN:</strong> a number ordering MTN data through us for the first time may show “Awaiting Verification” for a one-time check before it delivers — normally up to a week, sometimes a couple of weeks (future orders to that same number go through normally).</>}</p></aside><div className="modal-actions"><button className="button button-quiet" type="button" onClick={() => setConfirmOpen(false)}>Review details</button><button className="button button-ink" type="button" disabled={busy} onClick={startPayment}>Confirm & pay {formatMoney(paymentAmounts.totalAmount, plan?.currency)}</button></div></section></div>}
+          {confirmOpen && <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setConfirmOpen(false)}><section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title"><span className="modal-icon"><Smartphone size={21} /></span><h2 id="confirm-title">Confirm your order</h2><p>{formatMoney(paymentAmounts.totalAmount, plan?.currency)} will send {plan?.bundleGb}GB {plan?.network} data to {formatPhone(recipient)}.</p><div className="confirm-costs"><div><span>Bundle price</span><strong>{formatMoney(paymentAmounts.baseAmount, plan?.currency)}</strong></div><div><span>Paystack fee (4%)</span><strong>{formatMoney(paymentAmounts.feeAmount, plan?.currency)}</strong></div></div><aside className="important-notice confirm-notice" aria-labelledby="confirm-notice-title"><div className="important-notice-heading"><CircleAlert size={18} /><h3 id="confirm-notice-title">Important Notice</h3></div><p><strong>{storefrontSettings.notices.delivery}</strong> {storefrontSettings.notices.airtime} {storefrontSettings.notices.wrongNumber}{network === 'MTN' && <> <strong>MTN:</strong> {storefrontSettings.notices.mtnVerification}</>}</p></aside><div className="modal-actions"><button className="button button-quiet" type="button" onClick={() => setConfirmOpen(false)}>Review details</button><button className="button button-ink" type="button" disabled={busy} onClick={startPayment}>Confirm & pay {formatMoney(paymentAmounts.totalAmount, plan?.currency)}</button></div></section></div>}
         </div>
 
         <aside className="checkout-aside">

@@ -28,6 +28,11 @@ const config = {
 
   databaseUrl: process.env.DATABASE_URL || '',
 
+  admin: {
+    email: process.env.ADMIN_EMAIL || '',
+    password: process.env.ADMIN_PASSWORD || '',
+  },
+
   rateLimit: {
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60000,
     maxWrite: parseInt(process.env.RATE_LIMIT_MAX_WRITE, 10) || 20,
@@ -61,6 +66,11 @@ function validateConfig() {
 
   if (config.isProduction && !config.databaseUrl) {
     missing.push('DATABASE_URL');
+  }
+  if (config.isProduction && !config.admin.email) missing.push('ADMIN_EMAIL');
+  if (config.isProduction && !config.admin.password) missing.push('ADMIN_PASSWORD');
+  if (config.isProduction && config.admin.password && config.admin.password.length < 12) {
+    throw new Error('ADMIN_PASSWORD must be at least 12 characters in production.');
   }
 
   if (missing.length > 0) {

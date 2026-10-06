@@ -13,6 +13,8 @@ const plansRoutes = require('./routes/plans');
 const ordersRoutes = require('./routes/orders');
 const paymentsRoutes = require('./routes/payments');
 const webhooksRoutes = require('./routes/webhooks');
+const storefrontRoutes = require('./routes/storefront');
+const adminRoutes = require('./routes/admin');
 
 validateConfig();
 
@@ -46,6 +48,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/plans', plansRoutes);
+app.use('/api/storefront', storefrontRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/webhooks', webhooksRoutes);

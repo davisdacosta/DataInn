@@ -45,14 +45,14 @@ secret key. It only ever calls **our own** backend.
 ```
 project-root/
   frontend/
-    index.html, buy.html, track.html, success.html, failed.html — Vite entry pages
+    index.html, buy.html, track.html, success.html, failed.html, admin.html — Vite entry pages
     scripts/prerender.mjs — generates route-specific HTML after the Vite build
     src/
       App.jsx           — page selection, document titles, and theme state
       entry-server.jsx  — React renderer used by the prerender build
       api.js            — typed-by-contract fetch wrapper for the backend API
       components/       — shared navigation and theme controls
-      pages/            — home, checkout, tracking, and order result views
+      pages/            — home, checkout, tracking, admin dashboard, and order result views
       styles.css        — responsive design tokens and component styles
       utils.js          — formatting and legacy URL helpers
     assets/             — brand logo and favicon
@@ -128,6 +128,7 @@ to ensure direct visits and refreshes serve the prerendered pages:
 | `/failed` | `/failed.html` | Rewrite |
 | `/privacy` | `/privacy.html` | Rewrite |
 | `/terms` | `/terms.html` | Rewrite |
+| `/admin` | `/admin.html` | Rewrite |
 
 The crawl files are published at `/robots.txt` and `/sitemap.xml`.
 
@@ -172,7 +173,28 @@ which the backend hands to the frontend at runtime via
 | `PAYSTACK_SECRET_KEY`     | from your Paystack dashboard — server-side only                                                             |
 | `PAYSTACK_PUBLIC_KEY`     | from your Paystack dashboard — safe to expose                                                               |
 | `DATABASE_URL`            | your Postgres connection string — see "Database modes"                                                      |
+| `ADMIN_EMAIL`             | private admin sign-in email                                                                                  |
+| `ADMIN_PASSWORD`          | private admin sign-in password (at least 12 characters in production)                                        |
 | `RATE_LIMIT_*`            | tune per-key limits if needed                                                                               |
+
+### Storefront administration
+
+The private dashboard is available at `/admin`. Configure `ADMIN_EMAIL` and
+`ADMIN_PASSWORD` on the backend; in production, use a unique password of at
+least 12 characters. Admin sessions expire after four hours and are signed
+server-side. Do not put these values in frontend environment variables.
+
+The dashboard can pause or resume MTN, Telecel, and AirtelTigo orders, set the
+MTN delivery-speed estimate, and edit the notices shown before payment. A
+paused network is hidden from available bundle listings and the API rejects
+stale attempts to place or pay for an order on that network.
+New storefront settings start with AirtelTigo paused; enable it in the
+dashboard when service is available again.
+
+Dashboard changes persist in PostgreSQL. After deploying this version, run
+`npm run db:migrate` from `backend/` against the production database before
+using the dashboard. Local development without `DATABASE_URL` uses the
+in-memory store, so changes there reset when the backend restarts.
 
 ## 8. Adding your DataSika API key
 

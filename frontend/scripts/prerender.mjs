@@ -51,6 +51,13 @@ const routes = [
     title: 'Terms of Service | DataInn',
     description: 'Read the terms that apply when you use DataInn.',
   },
+  {
+    path: '/admin',
+    source: 'admin.html',
+    title: 'Storefront dashboard | DataInn',
+    description: 'Private DataInn storefront administration.',
+    robots: 'noindex,nofollow',
+  },
 ];
 
 function escapeAttribute(value) {
