@@ -7,6 +7,50 @@ const IS_PRODUCTION = NODE_ENV === 'production';
 // MOCK_MODE can never be true in production, no matter what .env says.
 const MOCK_MODE = !IS_PRODUCTION && String(process.env.MOCK_MODE).toLowerCase() === 'true';
 
+function loadAdminUsers() {
+  const users = [];
+  const legacyEmail = process.env.ADMIN_EMAIL || '';
+  const legacyPassword = process.env.ADMIN_PASSWORD || '';
+
+  if (legacyEmail || legacyPassword) {
+    if (!legacyEmail || !legacyPassword) {
+      throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be provided together.');
+    }
+    users.push({ email: legacyEmail, password: legacyPassword });
+  }
+
+  if (process.env.ADMIN_USERS) {
+    let configuredUsers;
+    try {
+      configuredUsers = JSON.parse(process.env.ADMIN_USERS);
+    } catch {
+      throw new Error('ADMIN_USERS must be a valid JSON array of admin credentials.');
+    }
+    if (!Array.isArray(configuredUsers)) {
+      throw new Error('ADMIN_USERS must be a valid JSON array of admin credentials.');
+    }
+    users.push(...configuredUsers);
+  }
+
+  const normalizedUsers = users.map((user) => {
+    if (
+      !user
+      || typeof user.email !== 'string'
+      || !user.email.trim()
+      || typeof user.password !== 'string'
+      || !user.password
+    ) {
+      throw new Error('Each admin credential must include a non-empty email and password.');
+    }
+    return { email: user.email.trim().toLowerCase(), password: user.password };
+  });
+
+  if (new Set(normalizedUsers.map((user) => user.email)).size !== normalizedUsers.length) {
+    throw new Error('Admin email addresses must be unique.');
+  }
+  return normalizedUsers;
+}
+
 const config = {
   nodeEnv: NODE_ENV,
   isProduction: IS_PRODUCTION,
@@ -29,8 +73,7 @@ const config = {
   databaseUrl: process.env.DATABASE_URL || '',
 
   admin: {
-    email: process.env.ADMIN_EMAIL || '',
-    password: process.env.ADMIN_PASSWORD || '',
+    users: loadAdminUsers(),
   },
 
   rateLimit: {
@@ -67,10 +110,11 @@ function validateConfig() {
   if (config.isProduction && !config.databaseUrl) {
     missing.push('DATABASE_URL');
   }
-  if (config.isProduction && !config.admin.email) missing.push('ADMIN_EMAIL');
-  if (config.isProduction && !config.admin.password) missing.push('ADMIN_PASSWORD');
-  if (config.isProduction && config.admin.password && config.admin.password.length < 12) {
-    throw new Error('ADMIN_PASSWORD must be at least 12 characters in production.');
+  if (config.isProduction && config.admin.users.length === 0) {
+    missing.push('ADMIN_EMAIL/ADMIN_PASSWORD or ADMIN_USERS');
+  }
+  if (config.isProduction && config.admin.users.some((user) => user.password.length < 12)) {
+    throw new Error('Every admin password must be at least 12 characters in production.');
   }
 
   if (missing.length > 0) {

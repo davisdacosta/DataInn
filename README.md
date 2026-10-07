@@ -175,14 +175,28 @@ which the backend hands to the frontend at runtime via
 | `DATABASE_URL`            | your Postgres connection string — see "Database modes"                                                      |
 | `ADMIN_EMAIL`             | private admin sign-in email                                                                                  |
 | `ADMIN_PASSWORD`          | private admin sign-in password (at least 12 characters in production)                                        |
+| `ADMIN_USERS`             | optional JSON array of additional admin email/password pairs (at least 12 characters per password in production) |
 | `RATE_LIMIT_*`            | tune per-key limits if needed                                                                               |
 
 ### Storefront administration
 
-The private dashboard is available at `/admin`. Configure `ADMIN_EMAIL` and
-`ADMIN_PASSWORD` on the backend; in production, use a unique password of at
-least 12 characters. Admin sessions expire after four hours and are signed
-server-side. Do not put these values in frontend environment variables.
+The private dashboard is available at `/admin`. Configure the original admin
+with `ADMIN_EMAIL` and `ADMIN_PASSWORD`. To add more administrators, set
+`ADMIN_USERS` on the backend to a JSON array of credential objects; each admin
+needs a unique email and their own password. For example:
+
+```env
+ADMIN_USERS='[{"email":"second-admin@example.com","password":"use-a-unique-password-here"}]'
+```
+
+You can add multiple objects to that array. Existing `ADMIN_EMAIL` and
+`ADMIN_PASSWORD` credentials continue to work alongside any `ADMIN_USERS`
+entries. In production, every admin password must be at least 12 characters.
+Use a different password for each account. After editing the
+backend `.env`, restart/redeploy the backend for the change to take effect.
+Admin sessions expire after four hours and are signed server-side. Keep these
+credentials in the backend environment only; never put them in frontend
+environment variables or commit them to source control.
 
 The dashboard can pause or resume MTN, Telecel, and AirtelTigo orders, set the
 MTN delivery-speed estimate, and edit the notices shown before payment. A
